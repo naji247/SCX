@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Layout renders children correctly 1`] = `
+<div>
+  <div
+    className="root"
+  >
+    <div
+      className="container"
+    >
+      <div
+        className="root"
+        role="navigation"
+      >
+        <a
+          className="link"
+          href="/about"
+          onClick={[Function]}
+        >
+          About
+        </a>
+        <a
+          className="link"
+          href="/contact"
+          onClick={[Function]}
+        >
+          Contact
+        </a>
+        <span
+          className="spacer"
+        >
+           | 
+        </span>
+        <a
+          className="link"
+          href="/login"
+          onClick={[Function]}
+        >
+          Log in
+        </a>
+        <span
+          className="spacer"
+        >
+          or
+        </span>
+        <a
+          className="link highlight"
+          href="/register"
+          onClick={[Function]}
+        >
+          Sign up
+        </a>
+      </div>
+      <a
+        className="brand"
+        href="/"
+        onClick={[Function]}
+      >
+        <span
+          className="brandTxt"
+        >
+          SCX
+        </span>
+      </a>
+      <div
+        className="banner"
+      >
+        <h1
+          className="bannerTitle"
+        >
+          Stable Coin Exchange
+        </h1>
+        <p
+          className="bannerDesc"
+        >
+          Purchasing stable coins made easy.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    className="child"
+  />
+</div>
+`;
