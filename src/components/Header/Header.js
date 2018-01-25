@@ -13,7 +13,6 @@ import s from './Header.css';
 import Link from '../Link';
 import Navigation from '../Navigation';
 import logoUrl from './logo-small.png';
-import logoUrl2x from './logo-small@2x.png';
 
 class Header extends React.Component {
   render() {
@@ -22,18 +21,24 @@ class Header extends React.Component {
         <div className={s.container}>
           <Navigation />
           <Link className={s.brand} to="/">
-            {/* <img
+            <img
               src={logoUrl}
-              srcSet={`${logoUrl2x} 2x`}
-              width="38"
-              height="38"
+              srcSet={`${logoUrl} 2x`}
+              width="90"
+              height="90"
               alt="React"
-            /> */}
+            />
             <span className={s.brandTxt}>SCX</span>
           </Link>
           <div className={s.banner}>
-            <h1 className={s.bannerTitle}>Stable Coin Exchange</h1>
-            <p className={s.bannerDesc}>Purchasing stable coins made easy.</p>
+            <div className={s.pricesContainer}>
+              <span className={s.bannerTitle}>$10342</span>
+              <span className={s.bannerTitle}>$1.01</span>
+            </div>
+            <p className={s.bannerDesc}>Volatility is not your friend.</p>
+            <p className={s.bannerDesc}>
+              Take back control of your wealth with stable coins.
+            </p>
           </div>
         </div>
       </div>

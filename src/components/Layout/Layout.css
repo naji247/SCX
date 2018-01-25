@@ -19,6 +19,37 @@
  * Base styles
  * ========================================================================== */
 
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  src:
+    local('Roboto'),
+    local('Roboto-Regular'),
+    url(./fonts/Roboto-Regular.ttf) format('truetype'),
+    url(./fonts/Roboto-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: bold;
+  src:
+    local('Roboto Bold'),
+    local('Roboto-Bold'),
+    url(./fonts/Roboto-Bold.ttf) format('truetype'),
+    url(./fonts/Roboto-Bold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto-Light';
+  font-style: normal;
+  src:
+    local('Roboto Light'),
+    local('Roboto-Light'),
+    url(./fonts/Roboto-Light.ttf) format('truetype'),
+    url(./fonts/Roboto-Light.ttf) format('truetype');
+}
+
 html {
   color: #222;
   font-weight: 100;

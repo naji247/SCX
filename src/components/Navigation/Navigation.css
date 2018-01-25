@@ -6,6 +6,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
+@import '../variables.css';
 
 .root {
   float: right;
@@ -22,25 +23,5 @@
 .link,
 .link:active,
 .link:visited {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.link:hover {
-  color: rgba(255, 255, 255, 1);
-}
-
-.highlight {
-  margin-right: 8px;
-  margin-left: 8px;
-  border-radius: 3px;
-  background: rgba(0, 0, 0, 0.15);
-  color: #fff;
-}
-
-.highlight:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.spacer {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-color);
 }

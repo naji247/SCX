@@ -12,14 +12,14 @@
    * Typography
    * ======================================================================== */
 
-  --font-family-base: 'Segoe UI', 'HelveticaNeue-Light', sans-serif;
+  --font-family-base: 'Roboto';
   --text-color: #f4f4f4;
 
   /*
    * Layout
    * ======================================================================== */
 
-  --max-content-width: 1000px;
+  --max-content-width: 1600px;
 
   /*
    * Media queries breakpoints
