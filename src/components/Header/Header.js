@@ -24,8 +24,8 @@ class Header extends React.Component {
             <img
               src={logoUrl}
               srcSet={`${logoUrl} 2x`}
-              width="90"
-              height="90"
+              width="7%"
+              height="7%"
               alt="React"
             />
             <span className={s.brandTxt}>SCX</span>
