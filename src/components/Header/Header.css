@@ -49,6 +49,16 @@
   margin-top: 10%;
 }
 
+.price {
+  display: flex;
+  flex-direction: column;
+}
+
+.ticker {
+  font-size: 1.75em;
+  font-weight: bold;
+}
+
 .bannerTitle {
   margin: 0;
   padding: 10px;
@@ -65,6 +75,6 @@
   padding: 0;
   font-family: var(--font-family-base);
   font-weight: 200;
-  font-size: 1.25em;
+  font-size: 1.5em;
   margin: 0;
 }

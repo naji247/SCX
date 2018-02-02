@@ -32,8 +32,14 @@ class Header extends React.Component {
           </Link>
           <div className={s.banner}>
             <div className={s.pricesContainer}>
-              <span className={s.bannerTitle}>$10,342</span>
-              <span className={s.bannerTitle}>$1.01</span>
+              <div className={s.price}>
+                <span className={s.bannerTitle}>$10,342</span>
+                <span className={s.ticker}>BTC</span>
+              </div>
+              <div className={s.price}>
+                <span className={s.bannerTitle}>$1.01</span>
+                <span className={s.ticker}>BSE</span>
+              </div>
             </div>
             <div className={s.bannerDescContainer}>
               <p className={s.bannerDesc}>Volatility is not your friend.</p>
