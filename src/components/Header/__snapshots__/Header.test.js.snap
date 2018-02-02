@@ -53,7 +53,7 @@ exports[`Header renders children correctly 1`] = `
         <span
           className="bannerTitle"
         >
-          $10342
+          $10,342
         </span>
         <span
           className="bannerTitle"
@@ -61,16 +61,20 @@ exports[`Header renders children correctly 1`] = `
           $1.01
         </span>
       </div>
-      <p
-        className="bannerDesc"
+      <div
+        className="bannerDescContainer"
       >
-        Volatility is not your friend.
-      </p>
-      <p
-        className="bannerDesc"
-      >
-        Take back control of your wealth with stable coins.
-      </p>
+        <p
+          className="bannerDesc"
+        >
+          Volatility is not your friend.
+        </p>
+        <p
+          className="bannerDesc"
+        >
+          Take back control of your wealth with stable coins.
+        </p>
+      </div>
     </div>
   </div>
 </div>

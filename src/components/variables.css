@@ -6,14 +6,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:100,200,400');
 
 :root {
   /*
    * Typography
    * ======================================================================== */
 
-  --font-family-base: 'Roboto';
+  --font-family-logo: 'Roboto';
   --text-color: #f4f4f4;
+  --font-family-base: 'Nunito Sans', sans-serif;
 
   /*
    * Layout
