@@ -16,6 +16,8 @@ import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import nodeFetch from 'node-fetch';
 import React from 'react';
+// import { CronJob } from 'cron';
+// import request from 'request-promise';
 import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
 import App from './components/App';
@@ -221,6 +223,21 @@ if (!module.hot) {
     });
   });
 }
+
+// new CronJob(
+//   '*/30 * * * * *',
+//   async function() {
+//     const payload = await request({
+//       uri: 'https://api.coinmarketcap.com/v1/ticker/bitcoin/',
+//       json: true,
+//     });
+//     // TODO: Write to database
+//     console.info(payload);
+//   },
+//   null,
+//   true,
+//   'America/Los_Angeles',
+// );
 
 //
 // Hot Module Replacement
