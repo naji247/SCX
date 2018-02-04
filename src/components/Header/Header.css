@@ -15,7 +15,7 @@
 
 .root {
   background: linear-gradient(to bottom, #055ea8, #086ec3, #0c80e0, #50a5eb);
-  color: var(--text-color);
+  color: var(--text-color-white);
 }
 
 .container {
@@ -30,7 +30,7 @@
 }
 
 .brandTxt {
-  color: var(--text-color);
+  color: var(--text-color-white);
   vertical-align: middle;
   font-family: var(--font-family-logo);
   font-weight: 400;

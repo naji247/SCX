@@ -23,5 +23,5 @@
 .link,
 .link:active,
 .link:visited {
-  color: var(--text-color);
+  color: var(--text-color-white);
 }

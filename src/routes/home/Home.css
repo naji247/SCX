@@ -8,3 +8,34 @@
  */
 
 @import '../../components/variables.css';
+
+table {
+  font-family: var(--font-family-base) !important;
+  color: var(--text-color-black) !important;
+}
+
+th {
+  font-weight: bold !important;
+  text-align: center !important;
+  color: var(--text-color-black) !important;
+  font-size: 10pt !important;
+}
+
+td {
+  text-align: center !important;
+  font-weight: lighter !important;
+  color: var(--text-color-black) !important;
+  font-size: 11pt !important;
+}
+
+.tableContainer {
+  margin: auto;
+  width: 1000px;
+  text-align: center;
+  font-family: var(--font-family-base);
+}
+
+.tableHeader {
+  font-size: 18pt;
+  font-weight: normal;
+}
