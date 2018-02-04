@@ -24,7 +24,7 @@ class Home extends React.Component {
     return (
       <div className={s.tableContainer}>
         <h1 className={s.tableHeader}>Stability Metrics Dashboard</h1>
-        <Table>
+        <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Ticker</TableHeaderColumn>
@@ -36,7 +36,7 @@ class Home extends React.Component {
               <TableHeaderColumn>Volatility</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody displayRowCheckbox={false} showRowHover>
             <TableRow>
               <TableRowColumn colSpan="7">Stable Coins</TableRowColumn>
             </TableRow>
