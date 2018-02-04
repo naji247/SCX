@@ -18,6 +18,15 @@ import s from './Layout.css';
 import Header from '../Header';
 // import Feedback from '../Feedback';
 // import Footer from '../Footer';
+const muiTheme = getMuiTheme({
+  fontFamily: 'Nunito Sans',
+  palette: {
+    textColor: '#2A3439',
+  },
+  tableRow: {
+    hoverColor: '#CDE2F3',
+  },
+});
 
 class Layout extends React.Component {
   static propTypes = {
@@ -27,7 +36,7 @@ class Layout extends React.Component {
   render() {
     return (
       <div>
-        <MuiThemeProvider muiTheme={getMuiTheme()}>
+        <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
           <Header />
           {this.props.children}
           {/* <Feedback />

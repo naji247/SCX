@@ -35,11 +35,13 @@ class Home extends React.Component {
               <TableHeaderColumn>3 Month Range</TableHeaderColumn>
               <TableHeaderColumn>Volatility</TableHeaderColumn>
             </TableRow>
+            <TableRow className={s.titleRow}>
+              <TableHeaderColumn colSpan="7">
+                <div className={s.tableSubHeader}>Stable Coins</div>
+              </TableHeaderColumn>
+            </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false} showRowHover>
-            <TableRow>
-              <TableRowColumn colSpan="7">Stable Coins</TableRowColumn>
-            </TableRow>
             <TableRow>
               <TableRowColumn>DAI</TableRowColumn>
               <TableRowColumn>Dai</TableRowColumn>
@@ -79,11 +81,18 @@ class Home extends React.Component {
               </TableRowColumn>
               <TableRowColumn>0.11%</TableRowColumn>
             </TableRow>
-            <TableRow>
-              <TableRowColumn colSpan="7">
-                Other Cryptocurrencies
-              </TableRowColumn>
+          </TableBody>
+        </Table>
+
+        <Table selectable={false}>
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableRow className={s.titleRow}>
+              <TableHeaderColumn colSpan="7">
+                <div className={s.tableSubHeader}>Other Cryptocurrencies</div>
+              </TableHeaderColumn>
             </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} showRowHover>
             <TableRow>
               <TableRowColumn>BTC</TableRowColumn>
               <TableRowColumn>Bitcoin</TableRowColumn>
@@ -123,11 +132,20 @@ class Home extends React.Component {
               </TableRowColumn>
               <TableRowColumn>71%</TableRowColumn>
             </TableRow>
-            <TableRow>
-              <TableRowColumn colSpan="7">
-                Traditional Financial Assets
-              </TableRowColumn>
+          </TableBody>
+        </Table>
+
+        <Table selectable={false}>
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableRow className={s.titleRow}>
+              <TableHeaderColumn colSpan="7">
+                <div className={s.tableSubHeader}>
+                  Traditional Financial Assets
+                </div>
+              </TableHeaderColumn>
             </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false} showRowHover>
             <TableRow>
               <TableRowColumn>SPY</TableRowColumn>
               <TableRowColumn>S&amp;P 500 ETF</TableRowColumn>
