@@ -36,7 +36,7 @@ class Home extends React.Component {
               <TableHeaderColumn>Volatility</TableHeaderColumn>
             </TableRow>
             <TableRow className={s.titleRow}>
-              <TableHeaderColumn colSpan="7">
+              <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
                 <div className={s.tableSubHeader}>Stable Coins</div>
               </TableHeaderColumn>
             </TableRow>
@@ -87,7 +87,7 @@ class Home extends React.Component {
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow className={s.titleRow}>
-              <TableHeaderColumn colSpan="7">
+              <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
                 <div className={s.tableSubHeader}>Other Cryptocurrencies</div>
               </TableHeaderColumn>
             </TableRow>
@@ -138,7 +138,7 @@ class Home extends React.Component {
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow className={s.titleRow}>
-              <TableHeaderColumn colSpan="7">
+              <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
                 <div className={s.tableSubHeader}>
                   Traditional Financial Assets
                 </div>

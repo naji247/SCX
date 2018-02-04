@@ -34,6 +34,7 @@ td {
 
 .titleRow {
   background-color: var(--title-row-color);
+  height: 36px !important;
 }
 
 .tableHeader {
@@ -44,5 +45,5 @@ td {
 .tableSubHeader {
   font-weight: bolder;
   color: var(--text-color-black);
-  font-size: 1.1em;
+  font-size: 1em;
 }
