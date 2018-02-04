@@ -40,7 +40,7 @@
 
 .banner {
   text-align: center;
-  height: 50vh;
+  height: 40%;
 }
 
 .pricesContainer {
@@ -68,7 +68,7 @@
 }
 
 .bannerDescContainer {
-  margin-top: 10%;
+  margin: 50px 50px;
 }
 
 .bannerDesc {
