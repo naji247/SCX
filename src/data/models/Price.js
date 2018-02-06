@@ -10,14 +10,18 @@
 import DataType from 'sequelize';
 import Model from '../sequelize';
 
-const UserClaim = Model.define('UserClaim', {
-  type: {
-    type: DataType.STRING,
+const Price = Model.define('Prices', {
+  price: {
+    type: DataType.FLOAT,
   },
 
-  value: {
-    type: DataType.STRING,
+  ticker: {
+    type: DataType.STRING(6),
+  },
+
+  timestamp: {
+    type: DataType.DATE,
   },
 });
 
-export default UserClaim;
+export default Price;

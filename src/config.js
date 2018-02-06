@@ -31,7 +31,10 @@ module.exports = {
 
   // Database
   // TODO: Get database man...
-  databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
+  databaseName: 'stable_dashboard',
+  databasePort: 32768,
+  databaseUser: 'admin',
+  databasePassword: 'admin',
 
   // Web analytics
   analytics: {

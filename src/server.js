@@ -16,8 +16,8 @@ import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import nodeFetch from 'node-fetch';
 import React from 'react';
-// import { CronJob } from 'cron';
-// import request from 'request-promise';
+import { CronJob } from 'cron';
+import request from 'request-promise';
 import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
 import App from './components/App';
@@ -33,6 +33,8 @@ import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
+import sequelize from './data/sequelize';
+import Price from './data/models/Price';
 
 const app = express();
 
@@ -224,20 +226,43 @@ if (!module.hot) {
   });
 }
 
-// new CronJob(
-//   '*/30 * * * * *',
-//   async function() {
-//     const payload = await request({
-//       uri: 'https://api.coinmarketcap.com/v1/ticker/bitcoin/',
-//       json: true,
-//     });
-//     // TODO: Write to database
-//     console.info(payload);
-//   },
-//   null,
-//   true,
-//   'America/Los_Angeles',
-// );
+new CronJob(
+  '*/30 * * * * *',
+  async function() {
+    // const payload = await request({
+    //   uri: 'https://api.coinmarketcap.com/v1/ticker/bitcoin/',
+    //   json: true,
+    // });
+    const payload = {
+      id: 'bitcoin',
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      rank: '1',
+      price_usd: '6249.72',
+      price_btc: '1.0',
+      '24h_volume_usd': '9310100000.0',
+      market_cap_usd: '105299576118',
+      available_supply: '16848687.0',
+      total_supply: '16848687.0',
+      max_supply: '21000000.0',
+      percent_change_1h: '-3.46',
+      percent_change_24h: '-23.57',
+      percent_change_7d: '-43.95',
+      last_updated: '1517889270',
+    };
+    // TODO: Write to database
+    console.info(payload);
+    const price = Price.build({
+      price: payload.price_usd,
+      ticker: payload.symbol,
+      timestamp: Date.now(),
+    });
+    price.save();
+  },
+  null,
+  true,
+  'America/Los_Angeles',
+);
 
 //
 // Hot Module Replacement
