@@ -33,7 +33,6 @@ import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
-import sequelize from './data/sequelize';
 import Price from './data/models/Price';
 
 const app = express();
@@ -226,9 +225,9 @@ if (!module.hot) {
   });
 }
 
-new CronJob(
+const crony = new CronJob(
   '*/30 * * * * *',
-  async function() {
+  async () => {
     // const payload = await request({
     //   uri: 'https://api.coinmarketcap.com/v1/ticker/bitcoin/',
     //   json: true,
@@ -264,6 +263,8 @@ new CronJob(
   'America/Los_Angeles',
 );
 
+console.info(crony);
+console.info(request);
 //
 // Hot Module Replacement
 // -----------------------------------------------------------------------------

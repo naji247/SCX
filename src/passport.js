@@ -15,7 +15,7 @@
 
 import passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { User, UserLogin, Price, UserProfile } from './data/models';
+import { User, UserLogin, UserProfile } from './data/models';
 import config from './config';
 
 /**
