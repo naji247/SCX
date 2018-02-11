@@ -2,10 +2,10 @@ module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable('Prices', {
       id: {
+        type: Sequelize.UUID,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        autoIncrement: false,
       },
       price: {
         type: Sequelize.FLOAT,

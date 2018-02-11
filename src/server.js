@@ -34,6 +34,9 @@ import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
 import Price from './data/models/Price';
+const HISTORY_URL = 'https://www.coinbase.com/api/v2/prices/';
+import _ from 'lodash';
+import uuid from 'aguid';
 
 const app = express();
 
@@ -256,15 +259,35 @@ const crony = new CronJob(
       ticker: payload.symbol,
       timestamp: Date.now(),
     });
-    price.save();
+    // price.save();
   },
   null,
   true,
   'America/Los_Angeles',
 );
 
-console.info(crony);
-console.info(request);
+// SEED DATABASE HERE BECAUSE SEQUELIZE WAS A BAD CHOICE.
+// OKAY?! I'M SORRY MOM.
+const seedHistoricalData = async function() {
+  const coins = [{ ticker: 'BTC', name: 'Bitcoin' }];
+
+  _.forEach(coins, async coin => {
+    const url = HISTORY_URL + coin.ticker + '-USD/historic?period=year';
+    const res = await request({ url: url, json: true });
+    const bulkPrices = _.map(res.data.prices, date_price_obj => {
+      const { price, time } = date_price_obj;
+      return {
+        id: uuid(price + time),
+        price: price,
+        ticker: coin.ticker,
+        timestamp: new Date(time),
+      };
+    });
+    Price.bulkCreate(bulkPrices);
+  });
+};
+
+seedHistoricalData();
 //
 // Hot Module Replacement
 // -----------------------------------------------------------------------------

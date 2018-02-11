@@ -11,6 +11,11 @@ import DataType from 'sequelize';
 import Model from '../sequelize';
 
 const Price = Model.define('Prices', {
+  id: {
+    type: DataType.UUID,
+    primaryKey: true,
+  },
+
   price: {
     type: DataType.FLOAT,
   },
