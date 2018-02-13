@@ -38,6 +38,9 @@ const HISTORY_URL = 'https://www.coinbase.com/api/v2/prices/';
 import _ from 'lodash';
 import uuid from 'aguid';
 
+// Routers
+import { prices } from './api/prices';
+
 const app = express();
 
 //
@@ -69,7 +72,7 @@ app.use(
 app.use((err, req, res, next) => {
   // eslint-disable-line no-unused-vars
   if (err instanceof Jwt401Error) {
-    console.error('[express-jwt-error]', req.cookies.id_token);
+    // console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
     res.clearCookie('id_token');
   }
@@ -101,6 +104,8 @@ app.get(
     res.redirect('/');
   },
 );
+
+app.use('/api', prices);
 
 //
 // Register API middleware
@@ -202,7 +207,7 @@ pe.skipPackage('express');
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error(pe.render(err));
+  // console.error(pe.render(err));
   const html = ReactDOM.renderToStaticMarkup(
     <Html
       title="Internal Server Error"
@@ -253,12 +258,12 @@ const crony = new CronJob(
       last_updated: '1517889270',
     };
     // TODO: Write to database
-    console.info(payload);
-    const price = Price.build({
-      price: payload.price_usd,
-      ticker: payload.symbol,
-      timestamp: Date.now(),
-    });
+    // console.info(payload);
+    // const price = Price.build({
+    //   price: payload.price_usd,
+    //   ticker: payload.symbol,
+    //   timestamp: Date.now(),
+    // });
     // price.save();
   },
   null,
@@ -269,7 +274,10 @@ const crony = new CronJob(
 // SEED DATABASE HERE BECAUSE SEQUELIZE WAS A BAD CHOICE.
 // OKAY?! I'M SORRY MOM.
 const seedHistoricalData = async function() {
-  const coins = [{ ticker: 'BTC', name: 'Bitcoin' }];
+  const coins = [
+    { ticker: 'BTC', name: 'Bitcoin' },
+    { ticker: 'ETH', name: 'Ethereum' },
+  ];
 
   _.forEach(coins, async coin => {
     const url = HISTORY_URL + coin.ticker + '-USD/historic?period=year';
@@ -283,7 +291,11 @@ const seedHistoricalData = async function() {
         timestamp: new Date(time),
       };
     });
-    Price.bulkCreate(bulkPrices);
+    try {
+      Price.bulkCreate(bulkPrices);
+    } catch (error) {
+      // console.error(error);
+    }
   });
 };
 
