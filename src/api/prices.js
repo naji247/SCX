@@ -1,9 +1,7 @@
 import express from 'express';
 import Price from '../data/models/Price';
 import sequelize from '../data/sequelize';
-export const prices = express.Router();
-
-const getAllPrices = (req, res, next) => {
+export const getAllPrices = (req, res, next) => {
   var sqlString = `select *
   from "Prices" 
   where timestamp > now() - interval '1 year' 
@@ -28,5 +26,3 @@ const getAllPrices = (req, res, next) => {
       next();
     });
 };
-
-prices.route('/prices').get(getAllPrices);

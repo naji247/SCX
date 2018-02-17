@@ -39,7 +39,7 @@ import _ from 'lodash';
 import uuid from 'aguid';
 
 // Routers
-import { prices } from './api/prices';
+import { api } from './api/index';
 
 const app = express();
 
@@ -105,7 +105,7 @@ app.get(
   },
 );
 
-app.use('/api', prices);
+app.use('/api', api);
 
 //
 // Register API middleware
