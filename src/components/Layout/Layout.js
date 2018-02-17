@@ -8,7 +8,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -29,10 +28,6 @@ const muiTheme = getMuiTheme({
 });
 
 class Layout extends React.Component {
-  static propTypes = {
-    children: PropTypes.node.isRequired,
-  };
-
   render() {
     return (
       <div>

@@ -18,9 +18,15 @@ import {
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import React from 'react';
 import s from './Home.css';
+import { connect } from 'react-redux';
+import { getPrices } from '../../actions/runtime';
 
 class Home extends React.Component {
+  componentDidMount() {
+    this.props.getPrices();
+  }
   render() {
+    console.log(this);
     return (
       <div className={s.tableContainer}>
         <h1 className={s.tableHeader}>Stability Metrics</h1>
@@ -188,4 +194,12 @@ class Home extends React.Component {
   }
 }
 
-export default withStyles(s)(Home);
+const mapState = state => ({
+  ...state.prices,
+});
+
+const mapDispatch = {
+  getPrices,
+};
+
+export default connect(mapState, mapDispatch)(withStyles(s)(Home));
