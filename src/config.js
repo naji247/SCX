@@ -33,7 +33,7 @@ module.exports = {
   // TODO: Get database man...
   databaseName: 'stable_dashboard',
   databasePort: 32768,
-  databaseUser: 'admin',
+  databaseUser: 'postgres',
   databasePassword: 'admin',
 
   // Web analytics

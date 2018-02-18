@@ -195,7 +195,7 @@ class Home extends React.Component {
 }
 
 const mapState = state => ({
-  ...state.prices,
+  ...state.price,
 });
 
 const mapDispatch = {

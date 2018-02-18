@@ -1,6 +1,6 @@
 {
   "development": {
-    "username": "admin",
+    "username": "postgres",
     "password": "admin",
     "database": "stable_dashboard",
     "host": "localhost",

@@ -21,7 +21,7 @@ export function getAllPricesStarted() {
 
 export function getAllPricesDone(response) {
   return {
-    type: constants.GET_ALL_PRICES_STARTED,
+    type: constants.GET_ALL_PRICES_DONE,
     payload: response,
   };
 }
@@ -29,8 +29,8 @@ export function getAllPricesDone(response) {
 export function getPrices() {
   return async dispatch => {
     dispatch(getAllPricesStarted());
-    const response = await request({
-      uri: 'http://localhost:3000/api/prices',
+    const response = await request.get({
+      uri: 'http://localhost:3000/api/analytics',
       json: true,
     });
     dispatch(getAllPricesDone(response));

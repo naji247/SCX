@@ -17,18 +17,21 @@ export const getAnalytics = (req, res, next) => {
   );
 
   Promise.all(allPromises).then(allRes => {
-    var finalOutput = {};
+    const tickerToName = { BTC: 'Bitcoin', ETH: 'Ethereum' };
+    var finalOutput = [];
     var latest = allRes.shift();
     var max = allRes.shift();
     var min = allRes.shift();
-    console.log(latest);
+
     _.forEach(tickers, ticker => {
-      finalOutput[ticker] = {
+      finalOutput.push({
+        ticker: ticker,
+        name: tickerToName[ticker],
         latest: latest[ticker],
         max: max[ticker],
         min: min[ticker],
-        volatility: allRes.shift(),
-      };
+        volatility: allRes.shift() * 100,
+      });
     });
     res.send(finalOutput);
     next();
