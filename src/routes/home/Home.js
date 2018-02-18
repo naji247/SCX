@@ -26,7 +26,6 @@ class Home extends React.Component {
     this.props.getPrices();
   }
   render() {
-    console.log(this);
     return (
       <div className={s.tableContainer}>
         <h1 className={s.tableHeader}>Stability Metrics</h1>
@@ -89,57 +88,7 @@ class Home extends React.Component {
             </TableRow>
           </TableBody>
         </Table>
-
-        <Table selectable={false}>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-            <TableRow className={s.titleRow}>
-              <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
-                <div className={s.tableSubHeader}>Other Cryptocurrencies</div>
-              </TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false} showRowHover>
-            <TableRow>
-              <TableRowColumn>BTC</TableRowColumn>
-              <TableRowColumn>Bitcoin</TableRowColumn>
-              <TableRowColumn>$8,631.01</TableRowColumn>
-              <TableRowColumn>$146B</TableRowColumn>
-              <TableRowColumn>
-                $1,322.32 <br /> (28.23%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $12,323 <br /> (102.1%)
-              </TableRowColumn>
-              <TableRowColumn>71%</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>ETH</TableRowColumn>
-              <TableRowColumn>Ethereum</TableRowColumn>
-              <TableRowColumn>$951.81</TableRowColumn>
-              <TableRowColumn>$91B</TableRowColumn>
-              <TableRowColumn>
-                $1,322.32 <br /> (28.23%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $12,323 <br /> (102.1%)
-              </TableRowColumn>
-              <TableRowColumn>71%</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>LTC</TableRowColumn>
-              <TableRowColumn>Litecoin</TableRowColumn>
-              <TableRowColumn>$162.14</TableRowColumn>
-              <TableRowColumn>$8B</TableRowColumn>
-              <TableRowColumn>
-                $1,322.32 <br /> (28.23%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $12,323 <br /> (102.1%)
-              </TableRowColumn>
-              <TableRowColumn>71%</TableRowColumn>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <PriceTable name="Other Cryptocurrencies" prices={this.props.prices} />
 
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
@@ -194,6 +143,47 @@ class Home extends React.Component {
   }
 }
 
+class PriceTable extends React.PureComponent {
+  render() {
+    const { prices } = this.props;
+    const rows = prices.map((obj, i) => <PriceRow key={i} {...obj} />);
+    return (
+      <Table selectable={false}>
+        <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+          <TableRow className={s.titleRow}>
+            <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
+              <div className={s.tableSubHeader}>{this.props.name}</div>
+            </TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false} showRowHover>
+          {rows}
+        </TableBody>
+      </Table>
+    );
+  }
+}
+
+class PriceRow extends React.PureComponent {
+  render() {
+    const { ticker, latest, max, min, volatility, name } = this.props;
+    return (
+      <TableRow>
+        <TableRowColumn>{ticker}</TableRowColumn>
+        <TableRowColumn>{name}</TableRowColumn>
+        <TableRowColumn>{latest}</TableRowColumn>
+        <TableRowColumn>--</TableRowColumn>
+        <TableRowColumn>{min}</TableRowColumn>
+        <TableRowColumn>{max}</TableRowColumn>
+        <TableRowColumn>{precise(volatility)}</TableRowColumn>
+      </TableRow>
+    );
+  }
+}
+
+function precise(x) {
+  return Number.parseFloat(x).toPrecision(4);
+}
 const mapState = state => ({
   ...state.price,
 });
