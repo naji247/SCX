@@ -34,7 +34,9 @@ import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
 import Price from './data/models/Price';
-const HISTORY_URL = 'https://www.coinbase.com/api/v2/prices/';
+import DailyPrice from './data/models/DailyPrice';
+const COINBASE_URL = 'https://www.coinbase.com/api/v2/prices/';
+const ALPHAVANTAGE_URL = 'https://www.alphavantage.co/';
 import _ from 'lodash';
 import uuid from 'aguid';
 
@@ -273,19 +275,19 @@ const crony = new CronJob(
 
 // SEED DATABASE HERE BECAUSE SEQUELIZE WAS A BAD CHOICE.
 // OKAY?! I'M SORRY MOM.
-const seedHistoricalData = async function() {
+const seedHistoricalCryptoData = async function() {
   const coins = [
     { ticker: 'BTC', name: 'Bitcoin' },
     { ticker: 'ETH', name: 'Ethereum' },
   ];
 
   _.forEach(coins, async coin => {
-    const url = HISTORY_URL + coin.ticker + '-USD/historic?period=year';
+    const url = COINBASE_URL + coin.ticker + '-USD/historic?period=year';
     const res = await request({ url: url, json: true });
     const bulkPrices = _.map(res.data.prices, date_price_obj => {
       const { price, time } = date_price_obj;
       return {
-        id: uuid(price + time),
+        id: uuid(coin.ticker + time),
         price: price,
         ticker: coin.ticker,
         timestamp: new Date(time),
@@ -293,13 +295,42 @@ const seedHistoricalData = async function() {
     });
     try {
       Price.bulkCreate(bulkPrices);
+      DailyPrice.bulkCreate(bulkPrices);
     } catch (error) {
       // console.error(error);
     }
   });
 };
 
-seedHistoricalData();
+seedHistoricalCryptoData();
+
+const seedHistoricalETFData = async () => {
+  const etfs = ['SPY', 'AGG', 'GLD'];
+  _.forEach(etfs, async etf => {
+    const alphavantageUrl =
+      ALPHAVANTAGE_URL +
+      `query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${etf}&apikey=XHJ876BDNFFMFK1K`;
+    const res = await request({ url: alphavantageUrl, json: true });
+    // console.log(res[`Time Series (Daily)`]);
+    const bulkPrices = _.map(res[`Time Series (Daily)`], (value, key) => {
+      const date = new Date(key);
+      return {
+        id: uuid(etf + date),
+        price: value[`5. adjusted close`],
+        ticker: etf,
+        timestamp: date.toISOString(),
+      };
+    });
+    try {
+      DailyPrice.bulkCreate(bulkPrices);
+    } catch (error) {
+      // console.error(error);
+    }
+  });
+};
+
+seedHistoricalETFData();
+
 //
 // Hot Module Replacement
 // -----------------------------------------------------------------------------
