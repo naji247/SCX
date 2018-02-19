@@ -6,7 +6,7 @@ import Promise from 'promise';
 import _ from 'lodash';
 
 export const getAnalytics = (req, res, next) => {
-  var tickers = ['BTC', 'ETH'];
+  var tickers = ['BTC', 'ETH', 'GLD', 'AGG', 'SPY'];
   var volPromises = _.map(tickers, getVolatility);
   var allPromises = _.concat(
     getPriceStat('latest'),
@@ -16,7 +16,13 @@ export const getAnalytics = (req, res, next) => {
   );
 
   Promise.all(allPromises).then(allRes => {
-    const tickerToName = { BTC: 'Bitcoin', ETH: 'Ethereum' };
+    const tickerToName = {
+      BTC: 'Bitcoin',
+      ETH: 'Ethereum',
+      SPY: 'S&P 500 ETF',
+      AGG: 'Agg Bond ETF',
+      GLD: 'Gold ETF',
+    };
     var finalOutput = [];
     var latest = allRes.shift();
     var max = allRes.shift();
