@@ -29,7 +29,6 @@ export const getAnalytics = (req, res, next) => {
     var max = allRes.shift();
     var min = allRes.shift();
     var marketCap = allRes.shift();
-    console.log(marketCap);
 
     _.forEach(tickers, ticker => {
       finalOutput.push({

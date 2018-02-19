@@ -39,9 +39,9 @@ import MarketCap from './data/models/MarketCap';
 const COINBASE_URL = 'https://www.coinbase.com/api/v2/prices/';
 const ALPHAVANTAGE_URL = 'https://www.alphavantage.co/';
 const COINMARKETCAP_URL = 'https://api.coinmarketcap.com/v1/ticker/';
+const GOOGLE_FINANCE_API = 'https://finance.google.com/finance?output=json&q=';
 import _ from 'lodash';
 import uuid from 'aguid';
-
 // Routers
 import { api } from './api/index';
 
@@ -238,29 +238,12 @@ if (!module.hot) {
 }
 
 const crony = new CronJob(
-  '*/30 * * * * *',
+  '*/60 * * * * *',
   async () => {
     // const payload = await request({
     //   uri: 'https://api.coinmarketcap.com/v1/ticker/bitcoin/',
     //   json: true,
     // });
-    const payload = {
-      id: 'bitcoin',
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      rank: '1',
-      price_usd: '6249.72',
-      price_btc: '1.0',
-      '24h_volume_usd': '9310100000.0',
-      market_cap_usd: '105299576118',
-      available_supply: '16848687.0',
-      total_supply: '16848687.0',
-      max_supply: '21000000.0',
-      percent_change_1h: '-3.46',
-      percent_change_24h: '-23.57',
-      percent_change_7d: '-43.95',
-      last_updated: '1517889270',
-    };
     // TODO: Write to database
     // console.info(payload);
     // const price = Price.build({
@@ -269,6 +252,42 @@ const crony = new CronJob(
     //   timestamp: Date.now(),
     // });
     // price.save();
+
+    const coins = [
+      { ticker: 'BTC', name: 'Bitcoin' },
+      { ticker: 'ETH', name: 'Ethereum' },
+    ];
+
+    const etfs = ['SPY', 'AGG', 'GLD'];
+
+    _.forEach(coins, async coin => {
+      // Market Caps
+      const marketCapUrl = COINMARKETCAP_URL + coin.name;
+      const res2 = await request({ url: marketCapUrl, json: true });
+      if (res2 && res2.length > 0 && res2[0]['market_cap_usd']) {
+        const marketCap = res2[0]['market_cap_usd'];
+        try {
+          await MarketCap.upsert({ ticker: coin.ticker, marketCap: marketCap });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
+
+    _.forEach(etfs, async etf => {
+      const etfMarketCapUrl = GOOGLE_FINANCE_API + etf;
+      const res3 = await request({ url: etfMarketCapUrl, json: true });
+      if (res3) {
+        try {
+          const json = JSON.parse(res3.substring(3));
+          // REMOVE the B for Billion
+          const etfMarketCap =
+            parseFloat(json[0]['mc'].replace(/B/g, '')) * 1e9;
+
+          await MarketCap.upsert({ ticker: etf, marketCap: etfMarketCap });
+        } catch (error) {}
+      }
+    });
   },
   null,
   true,
@@ -301,20 +320,6 @@ const seedHistoricalCryptoData = async function() {
       await DailyPrice.bulkCreate(bulkPrices);
     } catch (error) {
       // console.error(error);
-    }
-
-    // Market Caps
-    const marketCapUrl = COINMARKETCAP_URL + coin.name;
-    const res2 = await request({ url: marketCapUrl, json: true });
-    console.log(res2);
-    if (res2 && res2.length > 0 && res2[0]['market_cap_usd']) {
-      const marketCap = res2[0]['market_cap_usd'];
-      try {
-        console.log(`TRYING TO WRITE: ${marketCap} for ${coin.ticker}`);
-        await MarketCap.upsert({ ticker: coin.ticker, marketCap: marketCap });
-      } catch (error) {
-        console.log(error);
-      }
     }
   });
 };

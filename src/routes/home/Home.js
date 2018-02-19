@@ -135,13 +135,21 @@ class PriceTable extends React.PureComponent {
 
 class PriceRow extends React.PureComponent {
   render() {
-    const { ticker, latest, max, min, volatility, name } = this.props;
+    const {
+      ticker,
+      latest,
+      marketCap,
+      max,
+      min,
+      volatility,
+      name,
+    } = this.props;
     return (
       <TableRow>
         <TableRowColumn>{ticker}</TableRowColumn>
         <TableRowColumn>{name}</TableRowColumn>
         <TableRowColumn>{latest}</TableRowColumn>
-        <TableRowColumn>--</TableRowColumn>
+        <TableRowColumn>{precise(marketCap)}</TableRowColumn>
         <TableRowColumn>{min}</TableRowColumn>
         <TableRowColumn>{max}</TableRowColumn>
         <TableRowColumn>{precise(volatility)}</TableRowColumn>
