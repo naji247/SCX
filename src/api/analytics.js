@@ -1,5 +1,4 @@
 import express from 'express';
-import Price from '../data/models/Price';
 import sequelize from '../data/sequelize';
 import moment from 'moment';
 import jStat from 'jStat';
@@ -7,7 +6,7 @@ import Promise from 'promise';
 import _ from 'lodash';
 
 export const getAnalytics = (req, res, next) => {
-  var tickers = ['BTC', 'ETH'];
+  var tickers = ['BTC', 'ETH', 'GLD', 'AGG', 'SPY'];
   var volPromises = _.map(tickers, getVolatility);
   var allPromises = _.concat(
     getPriceStat('latest'),
@@ -18,7 +17,13 @@ export const getAnalytics = (req, res, next) => {
   );
 
   Promise.all(allPromises).then(allRes => {
-    const tickerToName = { BTC: 'Bitcoin', ETH: 'Ethereum' };
+    const tickerToName = {
+      BTC: 'Bitcoin',
+      ETH: 'Ethereum',
+      SPY: 'S&P 500 ETF',
+      AGG: 'Agg Bond ETF',
+      GLD: 'Gold ETF',
+    };
     var finalOutput = [];
     var latest = allRes.shift();
     var max = allRes.shift();
@@ -44,7 +49,7 @@ export const getAnalytics = (req, res, next) => {
 
 function getLatest() {
   sqlString =
-    'select distinct on ("ticker") * FROM "Prices" ORDER BY ticker, timestamp DESC';
+    'select distinct on ("ticker") * FROM "DailyPrices" ORDER BY ticker, timestamp DESC';
 
   return sequelize.query(sqlString, { type: sequelize.QueryTypes.SELECT });
 }
@@ -53,11 +58,11 @@ function getPriceStat(stat) {
   var sqlString = '';
   if (stat == 'latest') {
     sqlString =
-      'select distinct on ("ticker") * FROM "Prices" ORDER BY ticker, timestamp DESC';
+      'select distinct on ("ticker") * FROM "DailyPrices" ORDER BY ticker, timestamp DESC';
   } else if (stat == 'min') {
-    sqlString = `select ticker, min(price) as price from "Prices"  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
+    sqlString = `select ticker, min(price) as price from "DailyPrices"  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
   } else if (stat == 'max') {
-    sqlString = `select ticker, max(price) as price from "Prices"  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
+    sqlString = `select ticker, max(price) as price from "DailyPrices"  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
   }
   return sequelize
     .query(sqlString, { type: sequelize.QueryTypes.SELECT })
@@ -85,11 +90,8 @@ function getMarketCaps() {
 
 function getVolatility(ticker) {
   var sqlString = `select *
-  from "Prices" 
+  from "DailyPrices" 
   where timestamp > now() - interval '1 year' 
-  and extract(hour from timestamp) = 00
-  and extract(minute from timestamp) = 00
-  and extract(second from timestamp) = 00
   and ticker='${ticker}'
   ORDER BY timestamp`;
 
@@ -102,7 +104,7 @@ function getVolatility(ticker) {
       _.forEach(results, result => {
         var currDate = moment(result.timestamp);
         var currPrice = result.price;
-        if (prevDate && currDate.diff(prevDate, 'days') == 1) {
+        if (prevDate) {
           dailyRets.push((currPrice - prevPrice) / prevPrice);
         }
         prevDate = currDate;

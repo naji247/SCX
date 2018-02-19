@@ -20,6 +20,7 @@ import React from 'react';
 import s from './Home.css';
 import { connect } from 'react-redux';
 import { getPrices } from '../../actions/runtime';
+import _ from 'lodash';
 
 class Home extends React.Component {
   componentDidMount() {
@@ -88,56 +89,16 @@ class Home extends React.Component {
             </TableRow>
           </TableBody>
         </Table>
-        <PriceTable name="Other Cryptocurrencies" prices={this.props.prices} />
-
-        <Table selectable={false}>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-            <TableRow className={s.titleRow}>
-              <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
-                <div className={s.tableSubHeader}>
-                  Traditional Financial Assets
-                </div>
-              </TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false} showRowHover>
-            <TableRow>
-              <TableRowColumn>SPY</TableRowColumn>
-              <TableRowColumn>S&amp;P 500 ETF</TableRowColumn>
-              <TableRowColumn>$275.45</TableRowColumn>
-              <TableRowColumn>$277.54B</TableRowColumn>
-              <TableRowColumn>
-                $4.82 <br /> (1.75%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $11.17 <br /> (4.06%)
-              </TableRowColumn>
-              <TableRowColumn>9.18%</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>AGG</TableRowColumn>
-              <TableRowColumn>Agg Bond ETF</TableRowColumn>
-              <TableRowColumn>$107.20</TableRowColumn>
-              <TableRowColumn>$53.0B</TableRowColumn>
-              <TableRowColumn>
-                $0.25 <br /> (0.25%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $3.58 <br /> (3.34%)
-              </TableRowColumn>
-              <TableRowColumn>2.69%</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>GC1</TableRowColumn>
-              <TableRowColumn>Gold Futures</TableRowColumn>
-              <TableRowColumn>$8,631.01</TableRowColumn>
-              <TableRowColumn>$146B</TableRowColumn>
-              <TableRowColumn>1,322.32</TableRowColumn>
-              <TableRowColumn>$12,323</TableRowColumn>
-              <TableRowColumn>71%</TableRowColumn>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <PriceTable
+          name="Other Cryptocurrencies"
+          prices={this.props.prices}
+          members={['BTC', 'ETH', 'LTC']}
+        />
+        <PriceTable
+          name="Traditional Financial Assets"
+          prices={this.props.prices}
+          members={['SPY', 'AGG', 'GLD']}
+        />
       </div>
     );
   }
@@ -145,8 +106,16 @@ class Home extends React.Component {
 
 class PriceTable extends React.PureComponent {
   render() {
-    const { prices } = this.props;
-    const rows = prices.map((obj, i) => <PriceRow key={i} {...obj} />);
+    const { prices, members } = this.props;
+    const filteredPrices = _.filter(prices, row =>
+      _.includes(members, row.ticker),
+    );
+    const orderedFilteredPrices = _.orderBy(filteredPrices, row =>
+      _.indexOf(members, row.ticker),
+    );
+    const rows = orderedFilteredPrices.map((obj, i) => (
+      <PriceRow key={i} {...obj} />
+    ));
     return (
       <Table selectable={false}>
         <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
