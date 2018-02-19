@@ -35,8 +35,10 @@ import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
 import Price from './data/models/Price';
 import DailyPrice from './data/models/DailyPrice';
+import MarketCap from './data/models/MarketCap';
 const COINBASE_URL = 'https://www.coinbase.com/api/v2/prices/';
 const ALPHAVANTAGE_URL = 'https://www.alphavantage.co/';
+const COINMARKETCAP_URL = 'https://api.coinmarketcap.com/v1/ticker/';
 import _ from 'lodash';
 import uuid from 'aguid';
 
@@ -282,9 +284,10 @@ const seedHistoricalCryptoData = async function() {
   ];
 
   _.forEach(coins, async coin => {
-    const url = COINBASE_URL + coin.ticker + '-USD/historic?period=year';
-    const res = await request({ url: url, json: true });
-    const bulkPrices = _.map(res.data.prices, date_price_obj => {
+    // Price Info
+    const priceUrl = COINBASE_URL + coin.ticker + '-USD/historic?period=year';
+    const res1 = await request({ url: priceUrl, json: true });
+    const bulkPrices = _.map(res1.data.prices, date_price_obj => {
       const { price, time } = date_price_obj;
       return {
         id: uuid(coin.ticker + time),
@@ -294,10 +297,24 @@ const seedHistoricalCryptoData = async function() {
       };
     });
     try {
-      Price.bulkCreate(bulkPrices);
-      DailyPrice.bulkCreate(bulkPrices);
+      await Price.bulkCreate(bulkPrices);
+      await DailyPrice.bulkCreate(bulkPrices);
     } catch (error) {
       // console.error(error);
+    }
+
+    // Market Caps
+    const marketCapUrl = COINMARKETCAP_URL + coin.name;
+    const res2 = await request({ url: marketCapUrl, json: true });
+    console.log(res2);
+    if (res2 && res2.length > 0 && res2[0]['market_cap_usd']) {
+      const marketCap = res2[0]['market_cap_usd'];
+      try {
+        console.log(`TRYING TO WRITE: ${marketCap} for ${coin.ticker}`);
+        await MarketCap.upsert({ ticker: coin.ticker, marketCap: marketCap });
+      } catch (error) {
+        console.log(error);
+      }
     }
   });
 };
@@ -322,7 +339,7 @@ const seedHistoricalETFData = async () => {
       };
     });
     try {
-      DailyPrice.bulkCreate(bulkPrices);
+      await DailyPrice.bulkCreate(bulkPrices);
     } catch (error) {
       // console.error(error);
     }

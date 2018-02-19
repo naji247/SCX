@@ -13,6 +13,7 @@ export const getAnalytics = (req, res, next) => {
     getPriceStat('latest'),
     getPriceStat('max'),
     getPriceStat('min'),
+    getMarketCaps(),
     volPromises,
   );
 
@@ -22,6 +23,8 @@ export const getAnalytics = (req, res, next) => {
     var latest = allRes.shift();
     var max = allRes.shift();
     var min = allRes.shift();
+    var marketCap = allRes.shift();
+    console.log(marketCap);
 
     _.forEach(tickers, ticker => {
       finalOutput.push({
@@ -30,6 +33,7 @@ export const getAnalytics = (req, res, next) => {
         latest: latest[ticker],
         max: max[ticker],
         min: min[ticker],
+        marketCap: marketCap[ticker] || null,
         volatility: allRes.shift() * 100,
       });
     });
@@ -63,6 +67,19 @@ function getPriceStat(stat) {
         prices[row['ticker']] = row['price'];
       });
       return prices;
+    });
+}
+
+function getMarketCaps() {
+  var sqlString = `select "ticker", "marketCap" from "MarketCaps"`;
+  return sequelize
+    .query(sqlString, { type: sequelize.QueryTypes.SELECT })
+    .then(res => {
+      var marketCaps = {};
+      _.forEach(res, row => {
+        marketCaps[row.ticker] = row.marketCap;
+      });
+      return marketCaps;
     });
 }
 
