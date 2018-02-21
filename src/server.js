@@ -237,63 +237,6 @@ if (!module.hot) {
   });
 }
 
-const crony = new CronJob(
-  '*/60 * * * * *',
-  async () => {
-    // const payload = await request({
-    //   uri: 'https://api.coinmarketcap.com/v1/ticker/bitcoin/',
-    //   json: true,
-    // });
-    // TODO: Write to database
-    // console.info(payload);
-    // const price = Price.build({
-    //   price: payload.price_usd,
-    //   ticker: payload.symbol,
-    //   timestamp: Date.now(),
-    // });
-    // price.save();
-
-    const coins = [
-      { ticker: 'BTC', name: 'Bitcoin' },
-      { ticker: 'ETH', name: 'Ethereum' },
-    ];
-
-    const etfs = ['SPY', 'AGG', 'GLD'];
-
-    _.forEach(coins, async coin => {
-      // Market Caps
-      const marketCapUrl = COINMARKETCAP_URL + coin.name;
-      const res2 = await request({ url: marketCapUrl, json: true });
-      if (res2 && res2.length > 0 && res2[0]['market_cap_usd']) {
-        const marketCap = res2[0]['market_cap_usd'];
-        try {
-          await MarketCap.upsert({ ticker: coin.ticker, marketCap: marketCap });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    });
-
-    _.forEach(etfs, async etf => {
-      const etfMarketCapUrl = GOOGLE_FINANCE_API + etf;
-      const res3 = await request({ url: etfMarketCapUrl, json: true });
-      if (res3) {
-        try {
-          const json = JSON.parse(res3.substring(3));
-          // REMOVE the B for Billion
-          const etfMarketCap =
-            parseFloat(json[0]['mc'].replace(/B/g, '')) * 1e9;
-
-          await MarketCap.upsert({ ticker: etf, marketCap: etfMarketCap });
-        } catch (error) {}
-      }
-    });
-  },
-  null,
-  true,
-  'America/Los_Angeles',
-);
-
 // SEED DATABASE HERE BECAUSE SEQUELIZE WAS A BAD CHOICE.
 // OKAY?! I'M SORRY MOM.
 const seedHistoricalCryptoData = async function() {
@@ -324,7 +267,7 @@ const seedHistoricalCryptoData = async function() {
   });
 };
 
-seedHistoricalCryptoData();
+// seedHistoricalCryptoData();
 
 const seedHistoricalETFData = async () => {
   const etfs = ['SPY', 'AGG', 'GLD'];
