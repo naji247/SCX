@@ -39,7 +39,7 @@ class Home extends React.Component {
               <TableHeaderColumn>Price</TableHeaderColumn>
               <TableHeaderColumn>Market Cap</TableHeaderColumn>
               <TableHeaderColumn>
-                1 Year Range <br /> (%)
+                3 Month Range<br />(%)
               </TableHeaderColumn>
               <TableHeaderColumn>Volatility</TableHeaderColumn>
             </TableRow>
@@ -47,7 +47,13 @@ class Home extends React.Component {
         </Table>
 
         <PriceTable
-          name="Other Cryptocurrencies"
+          name="Stable Coins"
+          prices={this.props.prices}
+          members={['USDT', 'DAI', 'BITUSD']}
+        />
+
+        <PriceTable
+          name="Other Coins"
           prices={this.props.prices}
           members={['BTC', 'ETH', 'LTC']}
         />
