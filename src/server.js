@@ -237,65 +237,6 @@ if (!module.hot) {
   });
 }
 
-// SEED DATABASE HERE BECAUSE SEQUELIZE WAS A BAD CHOICE.
-// OKAY?! I'M SORRY MOM.
-const seedHistoricalCryptoData = async function() {
-  const coins = [
-    { ticker: 'BTC', name: 'Bitcoin' },
-    { ticker: 'ETH', name: 'Ethereum' },
-    { ticker: 'LTC', name: 'Litecoin' },
-  ];
-
-  _.forEach(coins, async coin => {
-    // Price Info
-    const priceUrl = COINBASE_URL + coin.ticker + '-USD/historic?period=year';
-    const res1 = await request({ url: priceUrl, json: true });
-    const bulkPrices = _.map(res1.data.prices, date_price_obj => {
-      const { price, time } = date_price_obj;
-      return {
-        id: uuid(coin.ticker + time),
-        price: price,
-        ticker: coin.ticker,
-        timestamp: new Date(time),
-      };
-    });
-    try {
-      await Price.bulkCreate(bulkPrices);
-      await DailyPrice.bulkCreate(bulkPrices);
-    } catch (error) {
-      // console.error(error);
-    }
-  });
-};
-seedHistoricalCryptoData();
-
-const seedHistoricalETFData = async () => {
-  const etfs = ['SPY', 'AGG', 'GLD'];
-  _.forEach(etfs, async etf => {
-    const alphavantageUrl =
-      ALPHAVANTAGE_URL +
-      `query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${etf}&apikey=XHJ876BDNFFMFK1K`;
-    const res = await request({ url: alphavantageUrl, json: true });
-    // console.log(res[`Time Series (Daily)`]);
-    const bulkPrices = _.map(res[`Time Series (Daily)`], (value, key) => {
-      const date = new Date(key);
-      return {
-        id: uuid(etf + date),
-        price: value[`5. adjusted close`],
-        ticker: etf,
-        timestamp: date.toISOString(),
-      };
-    });
-    try {
-      await DailyPrice.bulkCreate(bulkPrices);
-    } catch (error) {
-      // console.error(error);
-    }
-  });
-};
-
-seedHistoricalETFData();
-
 //
 // Hot Module Replacement
 // -----------------------------------------------------------------------------

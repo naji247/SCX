@@ -2,13 +2,20 @@ import { CronJob } from 'cron';
 const COINBASE_URL = 'https://www.coinbase.com/api/v2/prices/';
 const ALPHAVANTAGE_URL =
   'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=1min&apikey=XHJ876BDNFFMFK1K&symbol=';
+const ALPHAVANTAGE_DAILY_PRICE = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&apikey=XHJ876BDNFFMFK1K&symbol=`;
 const COINMARKETCAP_URL = 'https://api.coinmarketcap.com/v1/ticker/';
 const GOOGLE_FINANCE_API = 'https://finance.google.com/finance?output=json&q=';
+const COINMARKETCAP_HISTORY_URL = (coin, start, end) => {
+  return `https://graphs2.coinmarketcap.com/currencies/${_.toLower(
+    coin,
+  )}/${start.getTime()}/${end.getTime()}/`;
+};
 import Price from '../data/models/Price';
 import DailyPrice from '../data/models/DailyPrice';
 import MarketCap from '../data/models/MarketCap';
 import request from 'request-promise';
 import _ from 'lodash';
+import moment from 'moment';
 import uuid from 'aguid';
 
 const coins = [
@@ -17,9 +24,99 @@ const coins = [
   { ticker: 'LTC', name: 'Litecoin' },
   { ticker: 'DAI', name: 'Dai' },
   { ticker: 'USDT', name: 'Tether' },
+  { ticker: 'BITUSD', name: 'bitUSD' },
 ];
 
 const etfs = ['SPY', 'AGG', 'GLD'];
+
+const getPriceHistory = async () => {
+  _.forEach(coins, async coin => {
+    // History Coin Prices
+
+    if (_.includes(['BTC', 'ETH', 'LTC'], coin.ticker)) {
+      // Get from Coinbase
+      const historyUrl =
+        COINBASE_URL + coin.ticker + '-USD/historic?period=year';
+      const response = await request({ url: historyUrl, json: true });
+
+      try {
+        _.forEach(response.data.prices, async date_price_obj => {
+          const { price, time } = date_price_obj;
+          const formattedTime = moment(time)
+            .startOf('day')
+            .toDate();
+          await DailyPrice.upsert({
+            id: uuid(coin.ticker + formattedTime.toISOString()),
+            price: price,
+            ticker: coin.ticker,
+            timestamp: formattedTime,
+          });
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      // Get from CoinMC
+      const historyUrl = COINMARKETCAP_HISTORY_URL(
+        coin.name,
+        moment()
+          .startOf('day')
+          .subtract(1, 'year')
+          .toDate(),
+        moment()
+          .startOf('day')
+          .toDate(),
+      );
+      const response = await request({ url: historyUrl, json: true });
+      if (response && response['price_usd']) {
+        try {
+          _.forEach(response['price_usd'], async priceArray => {
+            const time = moment(priceArray[0])
+              .startOf('day')
+              .toDate();
+            const price = priceArray[1];
+            await DailyPrice.upsert({
+              id: uuid(coin.ticker + time.toISOString()),
+              ticker: coin.ticker,
+              price: price,
+              timestamp: time,
+            });
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  });
+
+  _.forEach(etfs, async etf => {
+    const alphavantageUrl = ALPHAVANTAGE_DAILY_PRICE + etf;
+    console.log(alphavantageUrl);
+    const response = await request({ url: alphavantageUrl, json: true });
+    _.forEach(response[`Time Series (Daily)`], async (value, key) => {
+      const date = moment(key)
+        .startOf('day')
+        .toDate();
+      const price = value[`5. adjusted close`];
+
+      await DailyPrice.upsert({
+        id: uuid(etf + date.toISOString()),
+        price: price,
+        ticker: etf,
+        timestamp: date,
+      });
+    });
+  });
+};
+
+const priceHistoryCron = new CronJob(
+  '00 06 * * * *',
+  getPriceHistory,
+  null,
+  false,
+  'America/Los_Angeles',
+);
+
 const pricesCron = new CronJob(
   '*/40 * * * * *',
   async () => {
@@ -158,6 +255,44 @@ export const stopPricesCron = (req, res, next) => {
     pricesCron.stop();
     pricesCron.running = false;
     res.send('Prices CRON stopped');
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+export const runPriceHistoryCron = async (req, res, next) => {
+  try {
+    await getPriceHistory();
+    res.send('Seeded DAILY PRICES');
+  } catch (error) {
+    console.error(error);
+    res.send('Failed seeding DAILY PRICES');
+  }
+};
+
+export const startPriceHistoryCron = (req, res, next) => {
+  try {
+    priceHistoryCron.start();
+    priceHistoryCron.running = true;
+    res.send('priceHistory CRON started');
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+export const statusPriceHistoryCron = (req, res, next) => {
+  if (priceHistoryCron.running) {
+    res.send('priceHistory CRON is RUNNING');
+  } else {
+    res.send('priceHistory CRON is STOPPED');
+  }
+};
+
+export const stopPriceHistoryCron = (req, res, next) => {
+  try {
+    priceHistoryCron.stop();
+    priceHistoryCron.running = false;
+    res.send('priceHistory CRON stopped');
   } catch (error) {
     res.send(error);
   }

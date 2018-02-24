@@ -13,3 +13,8 @@ api.route('/crons/marketcaps/status').get(cronApi.statusMarketCapCron);
 api.route('/crons/prices/start').get(cronApi.startPricesCron);
 api.route('/crons/prices/stop').get(cronApi.stopPricesCron);
 api.route('/crons/prices/status').get(cronApi.statusPricesCron);
+
+api.route('/crons/pricehistory/run').get(cronApi.runPriceHistoryCron);
+api.route('/crons/pricehistory/start').get(cronApi.startPriceHistoryCron);
+api.route('/crons/pricehistory/status').get(cronApi.statusPriceHistoryCron);
+api.route('/crons/pricehistory/stop').get(cronApi.stopPriceHistoryCron);
