@@ -21,6 +21,7 @@ import s from './Home.css';
 import { connect } from 'react-redux';
 import { getPrices } from '../../actions/runtime';
 import _ from 'lodash';
+import numeral from 'numeral';
 
 class Home extends React.Component {
   componentDidMount() {
@@ -37,58 +38,14 @@ class Home extends React.Component {
               <TableHeaderColumn>Name</TableHeaderColumn>
               <TableHeaderColumn>Price</TableHeaderColumn>
               <TableHeaderColumn>Market Cap</TableHeaderColumn>
-              <TableHeaderColumn>24 Hour Range</TableHeaderColumn>
-              <TableHeaderColumn>3 Month Range</TableHeaderColumn>
+              <TableHeaderColumn>
+                1 Year Range <br /> (%)
+              </TableHeaderColumn>
               <TableHeaderColumn>Volatility</TableHeaderColumn>
             </TableRow>
-            <TableRow className={s.titleRow}>
-              <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
-                <div className={s.tableSubHeader}>Stable Coins</div>
-              </TableHeaderColumn>
-            </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false} showRowHover>
-            <TableRow>
-              <TableRowColumn>DAI</TableRowColumn>
-              <TableRowColumn>Dai</TableRowColumn>
-              <TableRowColumn>$1.00</TableRowColumn>
-              <TableRowColumn>$10M</TableRowColumn>
-              <TableRowColumn>
-                $0.01 <br /> (1%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $0.01 <br /> (1%)
-              </TableRowColumn>
-              <TableRowColumn>0.15%</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>USDT</TableRowColumn>
-              <TableRowColumn>Tether</TableRowColumn>
-              <TableRowColumn>$1.00</TableRowColumn>
-              <TableRowColumn>$2.22B</TableRowColumn>
-              <TableRowColumn>
-                $0.005 <br /> (0.5%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $0.01 <br /> (1%)
-              </TableRowColumn>
-              <TableRowColumn>0.11%</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>BSE</TableRowColumn>
-              <TableRowColumn>Basecoin</TableRowColumn>
-              <TableRowColumn>$1.00</TableRowColumn>
-              <TableRowColumn>$0M</TableRowColumn>
-              <TableRowColumn>
-                $0.005 <br /> (0.5%)
-              </TableRowColumn>
-              <TableRowColumn>
-                $0.01 <br /> (1%)
-              </TableRowColumn>
-              <TableRowColumn>0.11%</TableRowColumn>
-            </TableRow>
-          </TableBody>
         </Table>
+
         <PriceTable
           name="Other Cryptocurrencies"
           prices={this.props.prices}
@@ -148,19 +105,40 @@ class PriceRow extends React.PureComponent {
       <TableRow>
         <TableRowColumn>{ticker}</TableRowColumn>
         <TableRowColumn>{name}</TableRowColumn>
-        <TableRowColumn>{latest}</TableRowColumn>
-        <TableRowColumn>{precise(marketCap)}</TableRowColumn>
-        <TableRowColumn>{min}</TableRowColumn>
-        <TableRowColumn>{max}</TableRowColumn>
-        <TableRowColumn>{precise(volatility)}</TableRowColumn>
+        <TableRowColumn>{formatPrice(latest)}</TableRowColumn>
+        <TableRowColumn>{formatMktCap(marketCap)}</TableRowColumn>
+        <TableRowColumn style={{ textAlign: 'center' }}>
+          {formatPrice(min)} - {formatPrice(max)}
+          <br />
+          ({formatPct(100 * (max - min) / latest)})
+        </TableRowColumn>
+        <TableRowColumn>{formatPct(volatility)}</TableRowColumn>
       </TableRow>
     );
   }
 }
 
-function precise(x) {
-  return Number.parseFloat(x).toPrecision(4);
+function formatPct(x) {
+  return Number.parseFloat(x).toPrecision(3) + '%';
 }
+
+function formatMktCap(x) {
+  return numeral(x)
+    .format('$0a')
+    .toString()
+    .toUpperCase();
+}
+
+function formatPrice(x) {
+  return (
+    '$' +
+    Number.parseFloat(x)
+      .toFixed(2)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  );
+}
+
 const mapState = state => ({
   ...state.price,
 });

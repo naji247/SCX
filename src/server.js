@@ -243,6 +243,7 @@ const seedHistoricalCryptoData = async function() {
   const coins = [
     { ticker: 'BTC', name: 'Bitcoin' },
     { ticker: 'ETH', name: 'Ethereum' },
+    { ticker: 'LTC', name: 'Litecoin' },
   ];
 
   _.forEach(coins, async coin => {
@@ -266,8 +267,7 @@ const seedHistoricalCryptoData = async function() {
     }
   });
 };
-
-// seedHistoricalCryptoData();
+seedHistoricalCryptoData();
 
 const seedHistoricalETFData = async () => {
   const etfs = ['SPY', 'AGG', 'GLD'];

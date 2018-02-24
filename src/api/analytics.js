@@ -6,7 +6,7 @@ import Promise from 'promise';
 import _ from 'lodash';
 
 export const getAnalytics = (req, res, next) => {
-  var tickers = ['BTC', 'ETH', 'GLD', 'AGG', 'SPY'];
+  var tickers = ['BTC', 'ETH', 'LTC', 'GLD', 'AGG', 'SPY'];
   var volPromises = _.map(tickers, getVolatility);
   var allPromises = _.concat(
     getPriceStat('latest'),
@@ -20,6 +20,7 @@ export const getAnalytics = (req, res, next) => {
     const tickerToName = {
       BTC: 'Bitcoin',
       ETH: 'Ethereum',
+      LTC: 'Litecoin',
       SPY: 'S&P 500 ETF',
       AGG: 'Agg Bond ETF',
       GLD: 'Gold ETF',
