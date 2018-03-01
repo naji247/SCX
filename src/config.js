@@ -34,7 +34,7 @@ module.exports = {
   databaseName: 'stable_dashboard',
   databasePort: 32768,
   databaseUser: 'postgres',
-  databasePassword: 'admin',
+  databasePassword: process.env.DATABASE_PASSWORD,
 
   // Web analytics
   analytics: {

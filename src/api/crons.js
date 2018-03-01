@@ -1,15 +1,5 @@
 import { CronJob } from 'cron';
-const COINBASE_URL = 'https://www.coinbase.com/api/v2/prices/';
-const ALPHAVANTAGE_URL =
-  'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=1min&apikey=XHJ876BDNFFMFK1K&symbol=';
-const ALPHAVANTAGE_DAILY_PRICE = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&apikey=XHJ876BDNFFMFK1K&symbol=`;
-const COINMARKETCAP_URL = 'https://api.coinmarketcap.com/v1/ticker/';
-const GOOGLE_FINANCE_API = 'https://finance.google.com/finance?output=json&q=';
-const COINMARKETCAP_HISTORY_URL = (coin, start, end) => {
-  return `https://graphs2.coinmarketcap.com/currencies/${_.toLower(
-    coin,
-  )}/${start.getTime()}/${end.getTime()}/`;
-};
+import { ALPHA_VANTAGE_API_KEY } from '../secrets';
 import Price from '../data/models/Price';
 import DailyPrice from '../data/models/DailyPrice';
 import MarketCap from '../data/models/MarketCap';
@@ -17,6 +7,17 @@ import request from 'request-promise';
 import _ from 'lodash';
 import moment from 'moment';
 import uuid from 'aguid';
+
+const COINBASE_URL = 'https://www.coinbase.com/api/v2/prices/';
+const ALPHAVANTAGE_URL = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=1min&apikey=${ALPHA_VANTAGE_API_KEY}&symbol=`;
+const ALPHAVANTAGE_DAILY_PRICE = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&apikey=${ALPHA_VANTAGE_API_KEY}&symbol=`;
+const COINMARKETCAP_URL = 'https://api.coinmarketcap.com/v1/ticker/';
+const GOOGLE_FINANCE_API = 'https://finance.google.com/finance?output=json&q=';
+const COINMARKETCAP_HISTORY_URL = (coin, start, end) => {
+  return `https://graphs2.coinmarketcap.com/currencies/${_.toLower(
+    coin,
+  )}/${start.getTime()}/${end.getTime()}/`;
+};
 
 const coins = [
   { ticker: 'BTC', name: 'Bitcoin' },

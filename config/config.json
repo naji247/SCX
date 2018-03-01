@@ -8,17 +8,19 @@
     "port": 32768
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "postgres",
+    "password": "admin",
+    "database": "stable_dashboard",
+    "host": "localhost",
+    "dialect": "postgres",
+    "port": 32768
   },
   "production": {
-    "username": "root",
+    "username": "postgres",
     "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "database": "stable_dashboard",
+    "host": "localhost",
+    "dialect": "postgres",
+    "port": 32768
   }
 }
