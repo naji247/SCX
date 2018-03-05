@@ -17,12 +17,12 @@ class Navigation extends React.Component {
   render() {
     return (
       <div className={s.root} role="navigation">
-        <Link className={s.link} to="/about">
+        {/* <Link className={s.link} to="/about">
           About
         </Link>
         <Link className={s.link} to="/dashboard">
           Dashboard
-        </Link>
+        </Link> */}
         {/* <Link className={s.link} to="/trade">
           Trade
         </Link> */}

@@ -13,9 +13,23 @@ import s from './Header.css';
 import Link from '../Link';
 import Navigation from '../Navigation';
 import logoUrl from './logo-small.png';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import { formatPrice } from '../../routes/home/Home';
 
 class Header extends React.Component {
   render() {
+    var bitcoinPrice = '...';
+    var tetherPrice = '...';
+    const prices = this.props.prices;
+    const btcObj = _.find(prices, priceObj => priceObj.ticker === 'BTC');
+    const usdtObj = _.find(prices, priceObj => priceObj.ticker === 'USDT');
+    if (btcObj && btcObj.latest) {
+      bitcoinPrice = formatPrice(btcObj.latest);
+    }
+    if (usdtObj && usdtObj.latest) {
+      tetherPrice = formatPrice(usdtObj.latest);
+    }
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -33,12 +47,12 @@ class Header extends React.Component {
           <div className={s.banner}>
             <div className={s.pricesContainer}>
               <div className={s.price}>
-                <span className={s.bannerTitle}>$10,342</span>
-                <span className={s.ticker}>BTC</span>
+                <span className={s.bannerTitle}>{bitcoinPrice}</span>
+                <span className={s.ticker}>Bitcoin</span>
               </div>
               <div className={s.price}>
-                <span className={s.bannerTitle}>$1.01</span>
-                <span className={s.ticker}>BSE</span>
+                <span className={s.bannerTitle}>{tetherPrice}</span>
+                <span className={s.ticker}>Tether</span>
               </div>
             </div>
             <div className={s.bannerDescContainer}>
@@ -54,4 +68,10 @@ class Header extends React.Component {
   }
 }
 
-export default withStyles(s)(Header);
+const mapState = state => ({
+  ...state.price,
+});
+
+const mapDispatch = {};
+
+export default connect(mapState, mapDispatch)(withStyles(s)(Header));

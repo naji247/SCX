@@ -135,7 +135,7 @@ function formatMktCap(x) {
     .toUpperCase();
 }
 
-function formatPrice(x) {
+export function formatPrice(x) {
   return (
     '$' +
     Number.parseFloat(x)
