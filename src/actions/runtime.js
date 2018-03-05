@@ -2,6 +2,7 @@
 
 import * as constants from '../constants';
 import request from 'request-promise';
+import { APP_URL } from '../secrets';
 
 export function setRuntimeVariable({ name, value }) {
   return {
@@ -30,7 +31,7 @@ export function getPrices() {
   return async dispatch => {
     dispatch(getAllPricesStarted());
     const response = await request.get({
-      uri: 'http://localhost:3000/api/analytics',
+      uri: `${APP_URL}/api/analytics`,
       json: true,
     });
     dispatch(getAllPricesDone(response));

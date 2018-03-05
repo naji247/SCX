@@ -62,7 +62,7 @@ export const getAnalytics = (req, res, next) => {
 
 function getLatest() {
   sqlString =
-    'select distinct on ("ticker") * FROM "DailyPrices" ORDER BY ticker, timestamp DESC';
+    'select distinct on ("ticker") * FROM "Prices" ORDER BY ticker, timestamp DESC';
 
   return sequelize.query(sqlString, { type: sequelize.QueryTypes.SELECT });
 }
@@ -71,7 +71,7 @@ function getPriceStat(stat) {
   var sqlString = '';
   if (stat == 'latest') {
     sqlString =
-      'select distinct on ("ticker") * FROM "DailyPrices" ORDER BY ticker, timestamp DESC';
+      'select distinct on ("ticker") * FROM "Prices" ORDER BY ticker, timestamp DESC';
   } else if (stat == 'min') {
     sqlString = `select ticker, min(price) as price from "DailyPrices"  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
   } else if (stat == 'max') {
