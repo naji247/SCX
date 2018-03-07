@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Layout from '../../components/Layout';
-import Page from '../../components/Page';
+import About from '../../components/About';
 import about from './about.md';
 
 function action() {
@@ -18,7 +18,7 @@ function action() {
     title: about.title,
     component: (
       <Layout>
-        <Page {...about} />
+        <About />
       </Layout>
     ),
   };
