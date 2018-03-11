@@ -21,7 +21,7 @@
 .container {
   margin: 0 auto;
   padding: 20px 0;
-  max-width: var(--max-content-width);
+  max-width: 90%;
 }
 
 .brand {
@@ -54,16 +54,12 @@
   flex-direction: column;
 }
 
-.ticker {
-  font-size: 1.75em;
-}
-
 .bannerTitle {
   margin: 0;
   padding: 10px;
   font-weight: normal;
-  font-size: 3em;
   line-height: 1em;
+  font-size: 300%;
 }
 
 .bannerDescContainer {
@@ -76,4 +72,12 @@
   font-weight: 200;
   font-size: 1.5em;
   margin: 0;
+}
+
+.ticker {
+  font-size: 175%;
+}
+
+.logo {
+  height: 2em;
 }

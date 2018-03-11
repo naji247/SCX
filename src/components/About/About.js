@@ -11,8 +11,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './About.css';
+import { getPrices } from '../../actions/runtime';
+import { connect } from 'react-redux';
 
 class About extends React.Component {
+  componentDidMount() {
+    this.props.getPrices();
+  }
   render() {
     return (
       <div className={s.root}>
@@ -44,4 +49,12 @@ class About extends React.Component {
   }
 }
 
-export default withStyles(s)(About);
+const mapState = state => ({
+  ...state.price,
+});
+
+const mapDispatch = {
+  getPrices,
+};
+
+export default connect(mapState, mapDispatch)(withStyles(s)(About));

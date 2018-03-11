@@ -22,9 +22,7 @@
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
-  src:
-    local('Roboto'),
-    local('Roboto-Regular'),
+  src: local('Roboto'), local('Roboto-Regular'),
     url(./fonts/Roboto-Regular.ttf) format('truetype'),
     url(./fonts/Roboto-Regular.ttf) format('truetype');
 }
@@ -33,9 +31,7 @@
   font-family: 'Roboto';
   font-style: normal;
   font-weight: bold;
-  src:
-    local('Roboto Bold'),
-    local('Roboto-Bold'),
+  src: local('Roboto Bold'), local('Roboto-Bold'),
     url(./fonts/Roboto-Bold.ttf) format('truetype'),
     url(./fonts/Roboto-Bold.ttf) format('truetype');
 }
@@ -43,19 +39,56 @@
 @font-face {
   font-family: 'Roboto-Light';
   font-style: normal;
-  src:
-    local('Roboto Light'),
-    local('Roboto-Light'),
+  src: local('Roboto Light'), local('Roboto-Light'),
     url(./fonts/Roboto-Light.ttf) format('truetype'),
     url(./fonts/Roboto-Light.ttf) format('truetype');
 }
 
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  src: local('Nunito Sans'), local('Nunito-Sans-Regular'),
+    url(./fonts/NunitoSans-Regular.ttf) format('truetype'),
+    url(./fonts/NunitoSans-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: 200;
+  src: local('Nunito Sans ExtraLight'), local('Nunito-Sans-ExtraLight'),
+    url(./fonts/NunitoSans-ExtraLight.ttf) format('truetype'),
+    url(./fonts/NunitoSans-ExtraLight.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Nunito Sans Bold'), local('Nunito-Sans-Bold'),
+    url(./fonts/NunitoSans-Bold.ttf) format('truetype'),
+    url(./fonts/NunitoSans-Bold.ttf) format('truetype');
+}
+
 html {
   color: #222;
-  font-weight: 100;
-  font-size: 1em; /* ~16px; */
+  font-weight: 200;
+
+  /* font-size: 16px; ~16px; */
   font-family: var(--font-family-base);
   line-height: 1.375; /* ~22px */
+}
+
+@media only screen and (min-width: 600px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  html {
+    font-size: 11px;
+  }
 }
 
 body {

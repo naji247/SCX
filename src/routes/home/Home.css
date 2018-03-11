@@ -15,6 +15,9 @@ th {
   text-align: center !important;
   color: var(--text-color-black) !important;
   font-size: 0.8em !important;
+  padding: 0 !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
 }
 
 td {
@@ -23,11 +26,13 @@ td {
   color: var(--text-color-black) !important;
   font-size: 0.9em !important;
   padding: 0 !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
 }
 
 .tableContainer {
   margin: auto;
-  width: 1000px;
+  width: 85%;
   text-align: center;
   font-family: var(--font-family-base);
 }
@@ -43,7 +48,7 @@ td {
 }
 
 .tableSubHeader {
-  font-weight: bolder;
   color: var(--text-color-black);
   font-size: 1em;
+  font-weight: normal;
 }

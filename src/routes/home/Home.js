@@ -30,7 +30,7 @@ class Home extends React.Component {
   render() {
     return (
       <div className={s.tableContainer}>
-        <h1 className={s.tableHeader}>Stability Metrics</h1>
+        <h1 className={s.tableHeader}>Stability Analytics</h1>
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
