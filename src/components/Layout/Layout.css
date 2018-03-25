@@ -22,9 +22,7 @@
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
-  src:
-    local('Roboto'),
-    local('Roboto-Regular'),
+  src: local('Roboto'), local('Roboto-Regular'),
     url(./fonts/Roboto-Regular.ttf) format('truetype'),
     url(./fonts/Roboto-Regular.ttf) format('truetype');
 }
@@ -33,9 +31,7 @@
   font-family: 'Roboto';
   font-style: normal;
   font-weight: bold;
-  src:
-    local('Roboto Bold'),
-    local('Roboto-Bold'),
+  src: local('Roboto Bold'), local('Roboto-Bold'),
     url(./fonts/Roboto-Bold.ttf) format('truetype'),
     url(./fonts/Roboto-Bold.ttf) format('truetype');
 }
@@ -43,11 +39,13 @@
 @font-face {
   font-family: 'Roboto-Light';
   font-style: normal;
-  src:
-    local('Roboto Light'),
-    local('Roboto-Light'),
+  src: local('Roboto Light'), local('Roboto-Light'),
     url(./fonts/Roboto-Light.ttf) format('truetype'),
     url(./fonts/Roboto-Light.ttf) format('truetype');
+}
+
+.MuiTable-root-1 {
+  font-family: 'Nunito Sans';
 }
 
 html {

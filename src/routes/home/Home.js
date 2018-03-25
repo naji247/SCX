@@ -7,21 +7,31 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  Table,
+import Table, {
   TableBody,
-  TableHeader,
-  TableHeaderColumn,
+  TableCell,
+  TableHead,
   TableRow,
-  TableRowColumn,
 } from 'material-ui/Table';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import { withStyles as muiStyles } from 'material-ui/styles';
 import React from 'react';
 import s from './Home.css';
 import { connect } from 'react-redux';
 import { getPrices } from '../../actions/runtime';
 import _ from 'lodash';
 import numeral from 'numeral';
+import Tooltip from 'material-ui/Tooltip';
+import Typography from 'material-ui/Typography';
+
+const CustomTableCell = muiStyles(theme => ({
+  head: {
+    backgroundColor: '#ebf3fa',
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 class Home extends React.Component {
   componentDidMount() {
@@ -31,32 +41,20 @@ class Home extends React.Component {
     return (
       <div className={s.tableContainer}>
         <h1 className={s.tableHeader}>Stability Metrics</h1>
-        <Table selectable={false}>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-            <TableRow>
-              <TableHeaderColumn>Ticker</TableHeaderColumn>
-              <TableHeaderColumn>Name</TableHeaderColumn>
-              <TableHeaderColumn>Price</TableHeaderColumn>
-              <TableHeaderColumn>Market Cap</TableHeaderColumn>
-              <TableHeaderColumn>
-                3 Month Range<br />(%)
-              </TableHeaderColumn>
-              <TableHeaderColumn>Volatility</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-        </Table>
+        <Table />
 
         <PriceTable
           name="Stable Coins"
           prices={this.props.prices}
           members={['USDT', 'DAI', 'BITUSD']}
         />
-
+        <br />
         <PriceTable
           name="Other Coins"
           prices={this.props.prices}
           members={['BTC', 'ETH', 'LTC']}
         />
+        <br />
         <PriceTable
           name="Traditional Financial Assets"
           prices={this.props.prices}
@@ -80,17 +78,30 @@ class PriceTable extends React.PureComponent {
       <PriceRow key={i} {...obj} />
     ));
     return (
-      <Table selectable={false}>
-        <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-          <TableRow className={s.titleRow}>
-            <TableHeaderColumn colSpan="7" style={{ height: '36px' }}>
-              <div className={s.tableSubHeader}>{this.props.name}</div>
-            </TableHeaderColumn>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <CustomTableCell>
+              <Typography>Ticker</Typography>
+            </CustomTableCell>
+            <CustomTableCell>
+              <Typography>Name</Typography>
+            </CustomTableCell>
+            <CustomTableCell>
+              <Typography>Price</Typography>
+            </CustomTableCell>
+            <CustomTableCell>
+              <Typography>Market Cap</Typography>
+            </CustomTableCell>
+            <CustomTableCell>
+              <Typography>3 Month Range (%)</Typography>
+            </CustomTableCell>
+            <CustomTableCell>
+              <Typography>Volatility</Typography>
+            </CustomTableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody displayRowCheckbox={false} showRowHover>
-          {rows}
-        </TableBody>
+        </TableHead>
+        <TableBody>{rows}</TableBody>
       </Table>
     );
   }
@@ -109,16 +120,32 @@ class PriceRow extends React.PureComponent {
     } = this.props;
     return (
       <TableRow>
-        <TableRowColumn>{ticker}</TableRowColumn>
-        <TableRowColumn>{name}</TableRowColumn>
-        <TableRowColumn>{formatPrice(latest)}</TableRowColumn>
-        <TableRowColumn>{formatMktCap(marketCap)}</TableRowColumn>
-        <TableRowColumn style={{ textAlign: 'center' }}>
-          {formatPrice(min)} - {formatPrice(max)}
-          <br />
-          ({formatPct(100 * (max - min) / latest)})
-        </TableRowColumn>
-        <TableRowColumn>{formatPct(volatility)}</TableRowColumn>
+        <CustomTableCell>
+          <Typography>{ticker}</Typography>
+        </CustomTableCell>
+        <CustomTableCell>
+          <Typography>{name}</Typography>
+        </CustomTableCell>
+        <CustomTableCell>
+          <Typography>{formatPrice(latest)}</Typography>
+        </CustomTableCell>
+        <CustomTableCell>
+          <Typography>{formatMktCap(marketCap)}</Typography>
+        </CustomTableCell>
+        <CustomTableCell>
+          <Typography>
+            {formatPrice(min)} - {formatPrice(max)}
+            <br />
+            ({formatPct(100 * (max - min) / latest)})
+          </Typography>
+        </CustomTableCell>
+        <CustomTableCell>
+          <Tooltip title="HELP ME! 'position: absolute;'" placement="top">
+            <Typography>
+              <span>{formatPct(volatility)}</span>
+            </Typography>
+          </Tooltip>
+        </CustomTableCell>
       </TableRow>
     );
   }

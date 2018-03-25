@@ -9,21 +9,25 @@
 
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import Reboot from 'material-ui/Reboot';
+
 // external-global styles must be imported in your JS.
 import normalizeCss from 'normalize.css';
 import s from './Layout.css';
 import Header from '../Header';
 // import Feedback from '../Feedback';
 // import Footer from '../Footer';
-const muiTheme = getMuiTheme({
-  fontFamily: 'Nunito Sans',
-  palette: {
-    textColor: '#2A3439',
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: 'Nunito Sans',
   },
-  tableRow: {
-    hoverColor: '#CDE2F3',
+  overrides: {
+    MuiTypography: {
+      subheading: {
+        fontWeight: 200,
+      },
+    },
   },
 });
 
@@ -31,7 +35,8 @@ class Layout extends React.Component {
   render() {
     return (
       <div>
-        <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
+        <MuiThemeProvider theme={theme}>
+          <Reboot />
           <Header />
           {this.props.children}
           {/* <Feedback />

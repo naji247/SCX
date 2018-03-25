@@ -48,7 +48,13 @@ class Header extends React.Component {
             <div className={s.pricesContainer}>
               <div className={s.price}>
                 <span className={s.bannerTitle}>{bitcoinPrice}</span>
-                <span className={s.ticker}>Bitcoin</span>
+                <span
+                  id="fuckmylife"
+                  title="I hate this silly game"
+                  className={s.ticker}
+                >
+                  Bitcoin
+                </span>
               </div>
               <div className={s.price}>
                 <span className={s.bannerTitle}>{tetherPrice}</span>
