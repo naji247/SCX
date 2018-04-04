@@ -18,10 +18,33 @@
   color: var(--text-color-white);
 }
 
+@media only screen and (min-width: 600px) {
+  .root {
+    height: 100vh;
+    min-height: 400px;
+  }
+
+  .pricesContainer {
+    margin-top: 4%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .root {
+    padding: 5% 0;
+    height: 50vh;
+  }
+
+  .pricesContainer {
+    margin-top: 8%;
+  }
+}
+
 .container {
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 2% 0;
   max-width: 90%;
+  height: 80%;
 }
 
 .brand {
@@ -40,13 +63,15 @@
 
 .banner {
   text-align: center;
-  height: 40%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .pricesContainer {
   display: flex;
   justify-content: space-around;
-  margin-top: 4%;
 }
 
 .price {
@@ -63,7 +88,7 @@
 }
 
 .bannerDescContainer {
-  margin: 50px 50px;
+  margin: 20px 10%;
 }
 
 .bannerDesc {
