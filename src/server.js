@@ -42,8 +42,10 @@ const COINMARKETCAP_URL = 'https://api.coinmarketcap.com/v1/ticker/';
 const GOOGLE_FINANCE_API = 'https://finance.google.com/finance?output=json&q=';
 import _ from 'lodash';
 import uuid from 'aguid';
+import { Strategy as LocalStrategy } from 'passport-local';
 // Routers
 import { api } from './api/index';
+import { auth } from './auth/index';
 
 const app = express();
 
@@ -62,54 +64,19 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-//
-// Authentication
-// -----------------------------------------------------------------------------
-app.use(
-  expressJwt({
-    secret: config.auth.jwt.secret,
-    credentialsRequired: false,
-    getToken: req => req.cookies.id_token,
-  }),
-);
-// Error handler for express-jwt
-app.use((err, req, res, next) => {
-  // eslint-disable-line no-unused-vars
-  if (err instanceof Jwt401Error) {
-    // console.error('[express-jwt-error]', req.cookies.id_token);
-    // `clearCookie`, otherwise user can't use web-app until cookie expires
-    res.clearCookie('id_token');
-  }
-  next(err);
-});
-
-app.use(passport.initialize());
-
 if (__DEV__) {
   app.enable('trust proxy');
 }
-app.get(
-  '/login/facebook',
-  passport.authenticate('facebook', {
-    scope: ['email', 'user_location'],
-    session: false,
-  }),
-);
-app.get(
-  '/login/facebook/return',
-  passport.authenticate('facebook', {
-    failureRedirect: '/login',
-    session: false,
-  }),
-  (req, res) => {
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
-    res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-    res.redirect('/');
-  },
-);
 
 app.use('/api', api);
+app.use('/auth', auth);
+
+app.get('/profile', passport.authenticate('jwt', { session: false }), function(
+  req,
+  res,
+) {
+  res.json(req.user);
+});
 
 //
 // Register API middleware

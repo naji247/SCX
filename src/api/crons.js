@@ -53,9 +53,7 @@ const getPriceHistory = async () => {
             timestamp: formattedTime,
           });
         });
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     } else {
       // Get from CoinMC
       const historyUrl = COINMARKETCAP_HISTORY_URL(
@@ -83,16 +81,13 @@ const getPriceHistory = async () => {
               timestamp: time,
             });
           });
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       }
     }
   });
 
   _.forEach(etfs, async etf => {
     const alphavantageUrl = ALPHAVANTAGE_DAILY_PRICE + etf;
-    console.log(alphavantageUrl);
     const response = await request({ url: alphavantageUrl, json: true });
     _.forEach(response[`Time Series (Daily)`], async (value, key) => {
       const date = moment(key)
@@ -135,9 +130,7 @@ const pricesCron = new CronJob(
             price: price,
             timestamp: time,
           });
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       }
     });
 
@@ -157,9 +150,7 @@ const pricesCron = new CronJob(
             price: etfPrice,
             timestamp: new Date(lastRefresh),
           });
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       }
     });
   },
@@ -179,9 +170,7 @@ const marketCapCron = new CronJob(
         const marketCap = res2[0]['market_cap_usd'];
         try {
           await MarketCap.upsert({ ticker: coin.ticker, marketCap: marketCap });
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       }
     });
 

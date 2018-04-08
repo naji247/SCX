@@ -123,7 +123,6 @@ function getVolatility(ticker) {
         prevDate = currDate;
         prevPrice = currPrice;
       });
-      console.log(dailyRets.length);
       var vol = jStat.stdev(dailyRets, false) * Math.sqrt(dailyRets.length);
       return vol;
     });

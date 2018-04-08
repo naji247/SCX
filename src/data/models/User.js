@@ -19,15 +19,29 @@ const User = Model.define(
       primaryKey: true,
     },
 
+    password: {
+      type: DataType.STRING(255),
+      allowNull: false,
+    },
+
     email: {
       type: DataType.STRING(255),
       validate: { isEmail: true },
+      unique: true,
     },
 
     emailConfirmed: {
       type: DataType.BOOLEAN,
       defaultValue: false,
     },
+
+    // TODO: Add refresh token later to invalidate auth tokens
+    // token: {
+    //   type: DataType.STRING(255),
+    //   defaultValue: null,
+    //   unique: true,
+    //   allowNull: true,
+    // },
   },
   {
     indexes: [{ fields: ['email'] }],
