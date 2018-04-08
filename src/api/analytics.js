@@ -56,7 +56,6 @@ export const getAnalytics = (req, res, next) => {
       });
     });
     res.send(finalOutput);
-    next();
   });
 };
 
