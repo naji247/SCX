@@ -1,0 +1,6 @@
+{
+  "name": "CallToAction",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./CallToAction.js"
+}
