@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import user from './user';
 import runtime from './runtime';
 import price from './priceReducer';
+import userState from './user';
 
 export default combineReducers({
-  user,
   runtime,
   price,
+  userState,
 });

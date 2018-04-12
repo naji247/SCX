@@ -9,15 +9,15 @@
 
 import React from 'react';
 import Layout from '../../components/Layout';
-import Login from './Login';
+import Signup from './Signup';
 
-const title = 'Log In';
+const title = 'Signup';
 
 function action() {
   return {
-    chunks: ['login'],
+    chunks: ['signup'],
     title,
-    component: <Login title={title} />,
+    component: <Signup title={title} />,
   };
 }
 

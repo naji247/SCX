@@ -10,22 +10,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Login.css';
+import s from '../login/Login.css';
+import { ErrorList } from '../login/Login';
 import { connect } from 'react-redux';
-import { login } from '../../actions/authActions';
-import Signup from './Signup';
+import { signup } from '../../actions/authActions';
 import validate from 'validate.js';
 import { BeatLoader } from 'react-spinners';
 
-class Login extends React.Component {
+class Signup extends React.Component {
   state = {
     email: '',
     password: '',
-    validationIssues: undefined,
-  };
-
-  static propTypes = {
-    title: PropTypes.string.isRequired,
   };
 
   handleEmailChange(event) {
@@ -36,11 +31,11 @@ class Login extends React.Component {
     this.setState({ password: event.target.value });
   }
 
-  onLoginClick() {
+  onSignupClick() {
     const { email, password } = this.state;
-    const { login } = this.props;
+    const { signup } = this.props;
 
-    const loginConstraints = {
+    const signupConstraints = {
       email: {
         presence: true,
         email: {
@@ -55,13 +50,12 @@ class Login extends React.Component {
         },
       },
     };
-
-    const validationIssues = validate({ email, password }, loginConstraints);
+    const validationIssues = validate({ email, password }, signupConstraints);
     this.setState({
       validationIssues: validationIssues,
     });
     if (!validationIssues) {
-      login(email, password);
+      signup(email, password);
     } else {
       this.setState({
         validationIssues: { ...validationIssues, server: [] },
@@ -78,16 +72,16 @@ class Login extends React.Component {
       <div className={s.root}>
         <div className={s.container}>
           <h1>{this.props.title}</h1>
-          <p className={s.lead}>Log in with your email address.</p>
+          <p className={s.lead}>Sign up with your email address.</p>
           <ErrorList issues={issues} />
           <div className={s.formGroup}>
             <label className={s.label} htmlFor="email">
               Email address:
               <input
                 className={s.input}
+                id="signup-email"
                 value={this.state.email}
                 onChange={event => this.handleEmailChange(event)}
-                id="login-email"
                 type="text"
                 name="email"
                 autoFocus // eslint-disable-line jsx-a11y/no-autofocus
@@ -99,7 +93,7 @@ class Login extends React.Component {
               Password:
               <input
                 className={s.input}
-                id="login-password"
+                id="signup-password"
                 value={this.state.password}
                 onChange={event => this.handlePasswordChange(event)}
                 type="password"
@@ -109,66 +103,30 @@ class Login extends React.Component {
           </div>
           <div className={s.formGroup}>
             <button
-              onClick={() => this.onLoginClick()}
+              onClick={() => this.onSignupClick()}
               className={s.button}
               type="submit"
             >
-              {!this.props.loading ? 'Login' : <BeatLoader color={'#ffffff'} />}
+              {!this.props.loading ? (
+                'Sign Up'
+              ) : (
+                <BeatLoader color={'#ffffff'} />
+              )}
             </button>
           </div>
-          {/* <strong className={s.lineThrough}>OR</strong> */}
         </div>
       </div>
     );
   }
 }
 
-export class ErrorList extends React.Component {
-  render() {
-    const { issues } = this.props;
-    if (!issues || issues.length === 0) return null;
-
-    var messages = [];
-    if (issues.email) {
-      _.forEach(issues.email, reason => {
-        messages.push(
-          <p key={reason} className={s.issues}>
-            {reason}
-          </p>,
-        );
-      });
-    }
-
-    if (issues.password) {
-      _.forEach(issues.password, reason => {
-        messages.push(
-          <p key={reason} className={s.issues}>
-            {reason}
-          </p>,
-        );
-      });
-    }
-
-    if (issues.server) {
-      _.forEach(issues.server, reason => {
-        messages.push(
-          <p key={reason} className={s.issues}>
-            {reason}
-          </p>,
-        );
-      });
-    }
-    return <div>{messages}</div>;
-  }
-}
-
 const mapState = state => ({
-  loading: state.userState.isLoadingLogin,
-  error: state.userState.loginError,
+  error: state.userState.signupError,
+  loading: state.userState.isLoadingSignup,
 });
 
 const mapDispatch = {
-  login,
+  signup,
 };
 
-export default connect(mapState, mapDispatch)(withStyles(s)(Login));
+export default connect(mapState, mapDispatch)(withStyles(s)(Signup));

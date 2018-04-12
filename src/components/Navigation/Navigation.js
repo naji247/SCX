@@ -12,8 +12,17 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Navigation.css';
 import Link from '../Link';
+import { connect } from 'react-redux';
+import { logout } from '../../actions/authActions';
+import store from 'store';
 
 class Navigation extends React.Component {
+  onLogoutClick(event) {
+    // TODO: Add long term storage
+    // if (store.get('scx_token')) store.remove('scx_token');
+    this.props.logout();
+  }
+
   render() {
     return (
       <div className={s.root} role="navigation">
@@ -23,6 +32,27 @@ class Navigation extends React.Component {
         <Link className={s.link} to="/about">
           About
         </Link>
+        {this.props.token
+          ? [
+              <Link className={s.link} to="/accounts">
+                Accounts
+              </Link>,
+              <Link
+                className={s.link}
+                to="/"
+                onClick={event => this.onLogoutClick(event)}
+              >
+                Logout
+              </Link>,
+            ]
+          : [
+              <Link className={s.link} to="/login">
+                Login
+              </Link>,
+              <Link className={s.link} to="/signup">
+                Signup
+              </Link>,
+            ]}
 
         {/* <Link className={s.link} to="/trade">
           Trade
@@ -40,4 +70,10 @@ class Navigation extends React.Component {
   }
 }
 
-export default withStyles(s)(Navigation);
+const mapState = state => ({
+  token: state.userState.token,
+});
+
+const mapDispatch = { logout };
+
+export default connect(mapState, mapDispatch)(withStyles(s)(Navigation));
