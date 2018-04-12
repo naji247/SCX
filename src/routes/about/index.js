@@ -10,6 +10,11 @@
 import React from 'react';
 import Layout from '../../components/Layout';
 import About from '../../components/About';
+import Introducing from '../../components/Introducing';
+import Description from '../../components/Description';
+import StablecoinPrimer from '../../components/StablecoinPrimer';
+import CallToAction from '../../components/CallToAction';
+
 import about from './about.md';
 
 function action() {
@@ -18,7 +23,10 @@ function action() {
     title: about.title,
     component: (
       <Layout>
-        <About />
+        <Introducing />
+        <Description />
+        <StablecoinPrimer />
+        <CallToAction />
       </Layout>
     ),
   };
