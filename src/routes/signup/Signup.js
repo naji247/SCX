@@ -13,15 +13,26 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from '../login/Login.css';
 import { ErrorList } from '../login/Login';
 import { connect } from 'react-redux';
-import { signup } from '../../actions/authActions';
+import { signup, logout } from '../../actions/authActions';
 import validate from 'validate.js';
 import { BeatLoader } from 'react-spinners';
+import history from '../../history';
 
 class Signup extends React.Component {
   state = {
     email: '',
     password: '',
+    confirmPassword: '',
   };
+
+  componentWillMount() {
+    this.setState({
+      email: '',
+      password: '',
+      confirmPassword: '',
+      validationIssues: undefined,
+    });
+  }
 
   handleEmailChange(event) {
     this.setState({ email: event.target.value });
@@ -31,8 +42,12 @@ class Signup extends React.Component {
     this.setState({ password: event.target.value });
   }
 
+  handleConfirmPasswordChange(event) {
+    this.setState({ confirmPassword: event.target.value });
+  }
+
   onSignupClick() {
-    const { email, password } = this.state;
+    const { email, password, confirmPassword } = this.state;
     const { signup } = this.props;
 
     const signupConstraints = {
@@ -49,8 +64,14 @@ class Signup extends React.Component {
           message: 'must be at least 6 characters.',
         },
       },
+      confirmPassword: {
+        equality: 'password',
+      },
     };
-    const validationIssues = validate({ email, password }, signupConstraints);
+    const validationIssues = validate(
+      { email, password, confirmPassword },
+      signupConstraints,
+    );
     this.setState({
       validationIssues: validationIssues,
     });
@@ -63,24 +84,40 @@ class Signup extends React.Component {
     }
   }
 
+  onExitClick() {
+    this.props.logout();
+    history.push('/');
+  }
+
+  signupDisabled() {
+    return (
+      this.state.email.length < 3 ||
+      this.state.password.length < 3 ||
+      this.state.confirmPassword.length < 3
+    );
+  }
+
   render() {
     var issues = this.state.validationIssues;
     if (!issues && this.props.error) {
       issues = { server: [this.props.error.error.message] };
     }
+    var disabled = this.signupDisabled();
     return (
       <div className={s.root}>
+        <div className={s.exit} onClick={() => this.onExitClick()}>
+          X
+        </div>
         <div className={s.container}>
-          <h1>{this.props.title}</h1>
-          <p className={s.lead}>Sign up with your email address.</p>
+          <p className={s.lead}>Create an Account</p>
           <ErrorList issues={issues} />
           <div className={s.formGroup}>
             <label className={s.label} htmlFor="email">
-              Email address:
               <input
                 className={s.input}
                 id="signup-email"
                 value={this.state.email}
+                placeholder="Email Address"
                 onChange={event => this.handleEmailChange(event)}
                 type="text"
                 name="email"
@@ -90,12 +127,25 @@ class Signup extends React.Component {
           </div>
           <div className={s.formGroup}>
             <label className={s.label} htmlFor="password">
-              Password:
               <input
                 className={s.input}
                 id="signup-password"
+                placeholder="Password"
                 value={this.state.password}
                 onChange={event => this.handlePasswordChange(event)}
+                type="password"
+                name="password"
+              />
+            </label>
+          </div>
+          <div className={s.formGroup}>
+            <label className={s.label} htmlFor="confirm-password">
+              <input
+                className={s.input}
+                id="signup-confirm-password"
+                placeholder="Confirm Password"
+                value={this.state.confirmPassword}
+                onChange={event => this.handleConfirmPasswordChange(event)}
                 type="password"
                 name="password"
               />
@@ -106,11 +156,12 @@ class Signup extends React.Component {
               onClick={() => this.onSignupClick()}
               className={s.button}
               type="submit"
+              disabled={disabled}
             >
               {!this.props.loading ? (
                 'Sign Up'
               ) : (
-                <BeatLoader color={'#ffffff'} />
+                <BeatLoader color={'#055ea8'} />
               )}
             </button>
           </div>
@@ -127,6 +178,7 @@ const mapState = state => ({
 
 const mapDispatch = {
   signup,
+  logout,
 };
 
 export default connect(mapState, mapDispatch)(withStyles(s)(Signup));

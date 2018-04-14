@@ -1,9 +1,16 @@
 import * as constants from '../constants';
 import request from 'request-promise';
 import { APP_URL } from '../secrets';
-import store from 'store';
+import store from '../storeUtil';
 import history from '../history';
+import jwt from 'jsonwebtoken';
 
+export function hydrateAuth(token) {
+  return {
+    type: constants.HYDRATE_AUTH,
+    payload: token,
+  };
+}
 export function loginStart() {
   return {
     type: constants.LOGIN_START,
@@ -35,7 +42,7 @@ export function login(email, password) {
   return async dispatch => {
     dispatch(loginStart());
     // TODO: Add long term storage
-    // if (store.get('scx_token')) store.remove('scx_token');
+    if (store.get('scx_token')) store.remove('scx_token');
     try {
       const response = await request
         .post({
@@ -47,7 +54,8 @@ export function login(email, password) {
           password,
         });
       // TODO: Add long term storage
-      // store.set('scx_token', response.token);
+      const { exp } = jwt.decode(response.token);
+      store.set('scx_token', response.token, new Date(exp * 1000));
       dispatch(loginDone(response));
       history.push('/');
     } catch (error) {
@@ -80,7 +88,7 @@ export function signup(email, password) {
   return async dispatch => {
     dispatch(signupStart());
     // TODO: Add long term storage
-    // if (store.get('scx_token')) store.remove('scx_token');
+    if (store.get('scx_token')) store.remove('scx_token');
     try {
       const response = await request
         .post({
@@ -92,7 +100,8 @@ export function signup(email, password) {
           password,
         });
       // TODO: Add long term storage
-      // store.set('scx_token', response.token);
+      const { exp } = jwt.decode(response.token);
+      store.set('scx_token', response.token, new Date(exp * 1000));
       dispatch(signupDone(response));
       history.push('/');
     } catch (error) {

@@ -10,6 +10,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider as ReduxProvider } from 'react-redux';
+import storage from '../storeUtil';
+import { hydrateAuth } from '../actions/authActions';
 
 const ContextType = {
   // Enables critical path CSS rendering
@@ -54,6 +56,16 @@ class App extends React.PureComponent {
 
   getChildContext() {
     return this.props.context;
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props.context.store;
+    const sessionStoredToken = storage.get('scx_token');
+    if (sessionStoredToken) {
+      dispatch(hydrateAuth(sessionStoredToken));
+    } else {
+      dispatch(hydrateAuth(null));
+    }
   }
 
   render() {

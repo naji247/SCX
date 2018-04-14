@@ -12,9 +12,10 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Login.css';
 import { connect } from 'react-redux';
-import { login } from '../../actions/authActions';
+import { login, logout } from '../../actions/authActions';
 import Signup from './Signup';
 import validate from 'validate.js';
+import history from '../../history';
 import { BeatLoader } from 'react-spinners';
 
 class Login extends React.Component {
@@ -23,6 +24,14 @@ class Login extends React.Component {
     password: '',
     validationIssues: undefined,
   };
+
+  componentWillMount() {
+    this.setState({
+      email: '',
+      password: '',
+      validationIssues: undefined,
+    });
+  }
 
   static propTypes = {
     title: PropTypes.string.isRequired,
@@ -69,24 +78,44 @@ class Login extends React.Component {
     }
   }
 
+  handleKeyPress(event) {
+    if (event.charCode == 13) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.onLoginClick();
+    }
+  }
+
+  onExitClick() {
+    this.props.logout();
+    history.push('/');
+  }
+
+  loginDisabled() {
+    return this.state.email.length < 3 || this.state.password.length < 3;
+  }
+
   render() {
     var issues = this.state.validationIssues;
     if (!issues && this.props.error) {
       issues = { server: [this.props.error.error.message] };
     }
+    var disabled = this.loginDisabled();
     return (
-      <div className={s.root}>
+      <div className={s.root} onKeyPress={event => this.handleKeyPress(event)}>
+        <div className={s.exit} onClick={() => this.onExitClick()}>
+          X
+        </div>
         <div className={s.container}>
-          <h1>{this.props.title}</h1>
-          <p className={s.lead}>Log in with your email address.</p>
+          <p className={s.lead}>Log into SCX</p>
           <ErrorList issues={issues} />
           <div className={s.formGroup}>
             <label className={s.label} htmlFor="email">
-              Email address:
               <input
                 className={s.input}
                 value={this.state.email}
                 onChange={event => this.handleEmailChange(event)}
+                placeholder="Email Address"
                 id="login-email"
                 type="text"
                 name="email"
@@ -96,9 +125,9 @@ class Login extends React.Component {
           </div>
           <div className={s.formGroup}>
             <label className={s.label} htmlFor="password">
-              Password:
               <input
                 className={s.input}
+                placeholder="Password"
                 id="login-password"
                 value={this.state.password}
                 onChange={event => this.handlePasswordChange(event)}
@@ -111,12 +140,16 @@ class Login extends React.Component {
             <button
               onClick={() => this.onLoginClick()}
               className={s.button}
+              disabled={disabled}
               type="submit"
             >
-              {!this.props.loading ? 'Login' : <BeatLoader color={'#ffffff'} />}
+              {!this.props.loading ? (
+                'Log In'
+              ) : (
+                <BeatLoader color={'#055ea8'} />
+              )}
             </button>
           </div>
-          {/* <strong className={s.lineThrough}>OR</strong> */}
         </div>
       </div>
     );
@@ -158,6 +191,16 @@ export class ErrorList extends React.Component {
         );
       });
     }
+
+    if (issues.confirmPassword) {
+      _.forEach(issues.confirmPassword, reason => {
+        messages.push(
+          <p key={reason} className={s.issues}>
+            {reason}
+          </p>,
+        );
+      });
+    }
     return <div>{messages}</div>;
   }
 }
@@ -169,6 +212,7 @@ const mapState = state => ({
 
 const mapDispatch = {
   login,
+  logout,
 };
 
 export default connect(mapState, mapDispatch)(withStyles(s)(Login));

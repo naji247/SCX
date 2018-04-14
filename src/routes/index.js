@@ -36,8 +36,8 @@ const routes = {
       load: () => import(/* webpackChunkName: 'about' */ './about'),
     },
     {
-      path: '/privacy',
-      load: () => import(/* webpackChunkName: 'privacy' */ './privacy'),
+      path: '/accounts',
+      load: () => import(/* webpackChunkName: 'accounts' */ './accounts'),
     },
     {
       path: '/admin',

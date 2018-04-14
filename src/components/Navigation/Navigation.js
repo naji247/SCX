@@ -14,12 +14,12 @@ import s from './Navigation.css';
 import Link from '../Link';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/authActions';
-import store from 'store';
+import store from '../../storeUtil';
 
 class Navigation extends React.Component {
   onLogoutClick(event) {
     // TODO: Add long term storage
-    // if (store.get('scx_token')) store.remove('scx_token');
+    if (store.get('scx_token')) store.remove('scx_token');
     this.props.logout();
   }
 

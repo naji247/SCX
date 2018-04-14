@@ -1,6 +1,8 @@
 import * as constants from '../constants';
+import jwt from 'jsonwebtoken';
 
 const initialState = {
+  isHydrating: true,
   isLoadingLogin: false,
   loginError: null,
 
@@ -9,8 +11,16 @@ const initialState = {
   token: null,
 };
 
+export const isAuthenticated = state => {
+  if (!state.token) return false;
+  const { exp } = jwt.decode(state.token);
+  return new Date(exp * 1000) > Date.now();
+};
+
 export default function userState(state = initialState, action) {
   switch (action.type) {
+    case constants.HYDRATE_AUTH:
+      return { ...state, isHydrating: false, token: action.payload };
     case constants.LOGIN_START:
       return { ...state, isLoadingLogin: true, token: null, loginError: null };
     case constants.LOGIN_DONE:
@@ -40,7 +50,7 @@ export default function userState(state = initialState, action) {
       };
 
     case constants.LOGOUT:
-      return initialState;
+      return { ...initialState, isHydrating: false };
 
     default:
       return state;
