@@ -50,7 +50,7 @@ class Navigation extends React.Component {
                 Login
               </Link>,
               <Link className={s.link} to="/signup">
-                Signup
+                Sign Up
               </Link>,
             ]}
 
