@@ -84,6 +84,14 @@ class Signup extends React.Component {
     }
   }
 
+  handleKeyPress(event) {
+    if (event.charCode == 13) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.onSignupClick();
+    }
+  }
+
   onExitClick() {
     this.props.logout();
     history.push('/');
@@ -104,7 +112,7 @@ class Signup extends React.Component {
     }
     var disabled = this.signupDisabled();
     return (
-      <div className={s.root}>
+      <div className={s.root} onKeyPress={event => this.handleKeyPress(event)}>
         <div className={s.exit} onClick={() => this.onExitClick()}>
           X
         </div>
