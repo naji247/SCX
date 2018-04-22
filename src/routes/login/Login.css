@@ -17,28 +17,16 @@
   align-items: center;
   height: 100vh;
   overflow: hidden;
-  background: radial-gradient(circle, #055ea8, #0c80e0);
-  background-repeat: no-repeat, repeat, repeat;
+  background: linear-gradient(to bottom, #055ea8, #086ec3, #0c80e0, #50a5eb);
   color: var(--text-color-white);
   font-family: var(--font-family-base);
 }
 
 body {
-  background: radial-gradient(circle, #055ea8, #0c80e0);
-  background-repeat: no-repeat, repeat, repeat;
   margin: 0;
   overflow: hidden;
   height: 100%;
 }
-
-/* html {
-  height: 100vh;
-  line-height: 1.375;
-}
-
-.foo {
-  height: 100%;
-} */
 
 .container {
   margin: 0 auto;
@@ -62,7 +50,8 @@ body {
 }
 
 .issues {
-  color: red;
+  color: var(--text-color-white);
+  text-align: center;
 }
 
 .input {
@@ -75,7 +64,7 @@ body {
   color: var(--text-color-white);
   outline: 0;
   border: none;
-  border-bottom: 1px solid #023967;
+  border-bottom: 1px solid var(--text-color-white);
   border-radius: 0;
   font-size: 0.8em;
   line-height: 1.3333333;
@@ -85,7 +74,8 @@ body {
 .input:focus {
 }
 .input::placeholder {
-  color: #023967;
+  color: var(--font-family-white);
+  /* color: #3e4750; */
 }
 
 .exit {
@@ -93,13 +83,13 @@ body {
   right: 40px;
   position: fixed;
   cursor: pointer;
-  font-size: 2.5em;
+  font-size: 1.5em;
   font-weight: 100;
 }
 
 .button {
   transition: background-color 0.5s ease;
-  margin: 0;
+  margin: 10px 0 0 0;
   padding: 10px 16px;
   width: 100%;
   outline: 0;
@@ -116,53 +106,13 @@ body {
 }
 
 .button:disabled {
-  background: rgb(2, 57, 103);
+  background: #aabac7;
 }
 
 .button:hover:disabled {
-  background: rgb(2, 57, 103);
+  background: #aabac7;
 }
 
 .button:hover {
-  background: #b3c3d1;
-}
-
-.icon {
-  margin: -2px 12px -2px 0;
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  fill: currentColor;
-}
-
-.lineThrough {
-  position: relative;
-  z-index: 1;
-  margin-bottom: 15px;
-  width: 100%;
-  color: #757575;
-  text-align: center;
-  font-size: 80%;
-}
-
-.lineThrough::before {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: -1;
-  margin-top: -5px;
-  margin-left: -20px;
-  width: 40px;
-  height: 10px;
-  background-color: #fff;
-  content: '';
-}
-
-.lineThrough::after {
-  position: absolute;
-  top: 49%;
-  z-index: -2;
-  width: 100%;
-  border-bottom: 1px solid #ddd;
-  content: '';
+  background: #aabac7;
 }

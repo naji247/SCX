@@ -17,6 +17,8 @@ import Signup from './Signup';
 import validate from 'validate.js';
 import history from '../../history';
 import { BeatLoader } from 'react-spinners';
+import Fade from 'react-reveal/Fade';
+import Shake from 'react-reveal/Shake';
 
 class Login extends React.Component {
   state = {
@@ -53,7 +55,7 @@ class Login extends React.Component {
       email: {
         presence: true,
         email: {
-          message: 'does not seem valid.',
+          message: 'is not valid.',
         },
       },
       password: {
@@ -100,6 +102,7 @@ class Login extends React.Component {
     if (!issues && this.props.error) {
       issues = { server: [this.props.error.error.message] };
     }
+
     var disabled = this.loginDisabled();
     return (
       <div className={s.root} onKeyPress={event => this.handleKeyPress(event)}>
@@ -107,49 +110,55 @@ class Login extends React.Component {
           X
         </div>
         <div className={s.container}>
-          <p className={s.lead}>Log into SCX</p>
+          <Fade top>
+            <p className={s.lead}>Log in to your account</p>
+          </Fade>
           <ErrorList issues={issues} />
-          <div className={s.formGroup}>
-            <label className={s.label} htmlFor="email">
-              <input
-                className={s.input}
-                value={this.state.email}
-                onChange={event => this.handleEmailChange(event)}
-                placeholder="Email Address"
-                id="login-email"
-                type="text"
-                name="email"
-                autoFocus // eslint-disable-line jsx-a11y/no-autofocus
-              />
-            </label>
-          </div>
-          <div className={s.formGroup}>
-            <label className={s.label} htmlFor="password">
-              <input
-                className={s.input}
-                placeholder="Password"
-                id="login-password"
-                value={this.state.password}
-                onChange={event => this.handlePasswordChange(event)}
-                type="password"
-                name="password"
-              />
-            </label>
-          </div>
-          <div className={s.formGroup}>
-            <button
-              onClick={() => this.onLoginClick()}
-              className={s.button}
-              disabled={disabled}
-              type="submit"
-            >
-              {!this.props.loading ? (
-                'Log In'
-              ) : (
-                <BeatLoader color={'#055ea8'} />
-              )}
-            </button>
-          </div>
+          <Shake when={!!issues}>
+            <div>
+              <div className={s.formGroup}>
+                <label className={s.label} htmlFor="email">
+                  <input
+                    className={s.input}
+                    value={this.state.email}
+                    onChange={event => this.handleEmailChange(event)}
+                    placeholder="Email Address"
+                    id="login-email"
+                    type="text"
+                    name="email"
+                    autoFocus // eslint-disable-line jsx-a11y/no-autofocus
+                  />
+                </label>
+              </div>
+              <div className={s.formGroup}>
+                <label className={s.label} htmlFor="password">
+                  <input
+                    className={s.input}
+                    placeholder="Password"
+                    id="login-password"
+                    value={this.state.password}
+                    onChange={event => this.handlePasswordChange(event)}
+                    type="password"
+                    name="password"
+                  />
+                </label>
+              </div>
+              <div className={s.formGroup}>
+                <button
+                  onClick={() => this.onLoginClick()}
+                  className={s.button}
+                  disabled={disabled}
+                  type="submit"
+                >
+                  {!this.props.loading ? (
+                    'Log In'
+                  ) : (
+                    <BeatLoader color={'#055ea8'} />
+                  )}
+                </button>
+              </div>
+            </div>
+          </Shake>
         </div>
       </div>
     );
@@ -201,7 +210,11 @@ export class ErrorList extends React.Component {
         );
       });
     }
-    return <div>{messages}</div>;
+    return (
+      <Fade top collapse>
+        <div>{messages}</div>
+      </Fade>
+    );
   }
 }
 

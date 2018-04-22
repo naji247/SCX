@@ -45,9 +45,16 @@ const authenticate = (req, res, err, user, info) => {
 };
 
 auth.post('/signup', function(req, res, next) {
-  const { email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   var errorMessage = [];
+  if (!firstName) {
+    errorMessage.push('Missing first name.');
+  }
+  if (!lastName) {
+    errorMessage.push('Missing last name.');
+  }
+
   if (!email) {
     errorMessage.push('Missing email.');
   }
@@ -67,6 +74,8 @@ auth.post('/signup', function(req, res, next) {
     .hash(password, 10)
     .then(password => {
       user = User.build({
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: password,
         createdAt: moment(),

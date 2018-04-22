@@ -35,6 +35,24 @@ const User = Model.define(
       defaultValue: false,
     },
 
+    firstName: {
+      type: DataType.STRING(255),
+      allowNull: false,
+    },
+
+    lastName: {
+      type: DataType.STRING(255),
+      allowNull: false,
+    },
+
+    phoneNumber: {
+      type: DataType.STRING(20),
+    },
+
+    country: {
+      type: DataType.STRING(255),
+    },
+
     // TODO: Add refresh token later to invalidate auth tokens
     // token: {
     //   type: DataType.STRING(255),

@@ -25,7 +25,7 @@ class Description extends React.Component {
               <div>
                 <h2 className={s.header}>What is SCX?</h2>
                 <p>
-                  We created SCX an online banking services platform for
+                  We created SCX to be an online banking services platform for
                   stablecoins. Manage your holdings and make deposits and
                   transfers in a secure and transparent way.
                 </p>

@@ -84,7 +84,7 @@ export function signupError(error) {
   };
 }
 
-export function signup(email, password) {
+export function signup(firstName, lastName, email, password) {
   return async dispatch => {
     dispatch(signupStart());
     // TODO: Add long term storage
@@ -96,6 +96,8 @@ export function signup(email, password) {
           json: true,
         })
         .form({
+          firstName,
+          lastName,
           email,
           password,
         });
