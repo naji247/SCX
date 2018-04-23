@@ -10,7 +10,7 @@
 import DataType from 'sequelize';
 import Model from '../sequelize';
 
-const Price = Model.define('Prices', {
+const Price = Model.define('price', {
   id: {
     type: DataType.UUID,
     primaryKey: true,
@@ -26,6 +26,14 @@ const Price = Model.define('Prices', {
 
   timestamp: {
     type: DataType.DATE,
+  },
+  createdAt: {
+    type: DataType.DATE,
+    field: 'created_at',
+  },
+  updatedAt: {
+    type: DataType.DATE,
+    field: 'updated_at',
   },
 });
 

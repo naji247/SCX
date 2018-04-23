@@ -61,7 +61,7 @@ export const getAnalytics = (req, res, next) => {
 
 function getLatest() {
   sqlString =
-    'select distinct on ("ticker") * FROM "Prices" ORDER BY ticker, timestamp DESC';
+    'select distinct on ("ticker") * FROM price ORDER BY ticker, timestamp DESC';
 
   return sequelize.query(sqlString, { type: sequelize.QueryTypes.SELECT });
 }
@@ -70,11 +70,11 @@ function getPriceStat(stat) {
   var sqlString = '';
   if (stat == 'latest') {
     sqlString =
-      'select distinct on ("ticker") * FROM "Prices" ORDER BY ticker, timestamp DESC';
+      'select distinct on ("ticker") * FROM price ORDER BY ticker, timestamp DESC';
   } else if (stat == 'min') {
-    sqlString = `select ticker, min(price) as price from "DailyPrices"  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
+    sqlString = `select ticker, min(price) as price from daily_price  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
   } else if (stat == 'max') {
-    sqlString = `select ticker, max(price) as price from "DailyPrices"  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
+    sqlString = `select ticker, max(price) as price from daily_price  where timestamp > now() - interval '3 months' GROUP BY "ticker"`;
   }
   return sequelize
     .query(sqlString, { type: sequelize.QueryTypes.SELECT })
@@ -88,13 +88,13 @@ function getPriceStat(stat) {
 }
 
 function getMarketCaps() {
-  var sqlString = `select "ticker", "marketCap" from "MarketCaps"`;
+  var sqlString = `select ticker, market_cap from market_cap`;
   return sequelize
     .query(sqlString, { type: sequelize.QueryTypes.SELECT })
     .then(res => {
       var marketCaps = {};
       _.forEach(res, row => {
-        marketCaps[row.ticker] = row.marketCap;
+        marketCaps[row.ticker] = row.market_cap;
       });
       return marketCaps;
     });
@@ -102,7 +102,7 @@ function getMarketCaps() {
 
 function getVolatility(ticker) {
   var sqlString = `select *
-  from "DailyPrices" 
+  from daily_price 
   where timestamp > now() - interval '1 year' 
   and ticker='${ticker}'
   ORDER BY timestamp`;

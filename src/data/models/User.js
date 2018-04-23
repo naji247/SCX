@@ -11,7 +11,7 @@ import DataType from 'sequelize';
 import Model from '../sequelize';
 
 const User = Model.define(
-  'User',
+  'user',
   {
     id: {
       type: DataType.UUID,
@@ -30,27 +30,37 @@ const User = Model.define(
       unique: true,
     },
 
-    emailConfirmed: {
+    email_confirmed: {
       type: DataType.BOOLEAN,
       defaultValue: false,
     },
 
-    firstName: {
+    first_name: {
       type: DataType.STRING(255),
       allowNull: false,
     },
 
-    lastName: {
+    last_name: {
       type: DataType.STRING(255),
       allowNull: false,
     },
 
-    phoneNumber: {
+    phone_number: {
       type: DataType.STRING(20),
     },
 
     country: {
       type: DataType.STRING(255),
+    },
+
+    createdAt: {
+      type: DataType.DATE,
+      field: 'created_at',
+    },
+
+    updatedAt: {
+      type: DataType.DATE,
+      field: 'updated_at',
     },
 
     // TODO: Add refresh token later to invalidate auth tokens

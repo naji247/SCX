@@ -44,7 +44,7 @@ const authenticate = (req, res, err, user, info) => {
   });
 };
 
-auth.post('/signup', function(req, res, next) {
+auth.post('/signup', function (req, res, next) {
   const { firstName, lastName, email, password } = req.body;
 
   var errorMessage = [];
@@ -74,12 +74,12 @@ auth.post('/signup', function(req, res, next) {
     .hash(password, 10)
     .then(password => {
       user = User.build({
-        firstName: firstName,
-        lastName: lastName,
+        first_name: firstName,
+        last_name: lastName,
         email: email,
         password: password,
-        createdAt: moment(),
-        updatedAt: moment(),
+        created_at: moment(),
+        updated_at: moment(),
       });
 
       return user.save();
@@ -103,7 +103,7 @@ auth.post('/signup', function(req, res, next) {
     });
 });
 
-auth.post('/login', function(req, res, next) {
+auth.post('/login', function (req, res, next) {
   passport.authenticate('local', { session: false }, (err, user, info) => {
     return authenticate(req, res, err, user, info);
   })(req, res);

@@ -169,7 +169,10 @@ const marketCapCron = new CronJob(
       if (res2 && res2.length > 0 && res2[0]['market_cap_usd']) {
         const marketCap = res2[0]['market_cap_usd'];
         try {
-          await MarketCap.upsert({ ticker: coin.ticker, marketCap: marketCap });
+          await MarketCap.upsert({
+            ticker: coin.ticker,
+            market_cap: marketCap,
+          });
         } catch (error) {}
       }
     });
@@ -184,7 +187,10 @@ const marketCapCron = new CronJob(
           const etfMarketCap =
             parseFloat(json[0]['mc'].replace(/B/g, '')) * 1e9;
 
-          await MarketCap.upsert({ ticker: etf, marketCap: etfMarketCap });
+          await MarketCap.upsert({
+            ticker: etf,
+            market_cap: etfMarketCap,
+          });
         } catch (error) {}
       }
     });
