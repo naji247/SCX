@@ -5,6 +5,7 @@ const initialState = {
   isHydrating: true,
   isLoadingLogin: false,
   loginError: null,
+  serverLoginAttempts: 0,
 
   isLoadingSignup: false,
   signupError: null,
@@ -22,15 +23,21 @@ export default function userState(state = initialState, action) {
     case constants.HYDRATE_AUTH:
       return { ...state, isHydrating: false, token: action.payload };
     case constants.LOGIN_START:
-      return { ...state, isLoadingLogin: true, token: null, loginError: null };
+      return { ...state, isLoadingLogin: true, token: null };
     case constants.LOGIN_DONE:
-      return { ...state, token: action.payload.token, isLoadingLogin: false };
+      return {
+        ...state,
+        token: action.payload.token,
+        isLoadingLogin: false,
+        loginError: null,
+      };
     case constants.LOGIN_ERROR:
       return {
         ...state,
         token: null,
         isLoadingLogin: false,
         loginError: action.payload,
+        serverLoginAttempts: state.serverLoginAttempts + 1,
       };
     case constants.SIGNUP_START:
       return {

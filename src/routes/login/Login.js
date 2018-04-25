@@ -25,6 +25,7 @@ class Login extends React.Component {
     email: '',
     password: '',
     validationIssues: undefined,
+    loginAttempts: 0,
   };
 
   componentWillMount() {
@@ -32,6 +33,7 @@ class Login extends React.Component {
       email: '',
       password: '',
       validationIssues: undefined,
+      loginAttempts: 0,
     });
   }
 
@@ -48,7 +50,7 @@ class Login extends React.Component {
   }
 
   onLoginClick() {
-    const { email, password } = this.state;
+    const { email, password, loginAttempts } = this.state;
     const { login } = this.props;
 
     const loginConstraints = {
@@ -76,6 +78,7 @@ class Login extends React.Component {
     } else {
       this.setState({
         validationIssues: { ...validationIssues, server: [] },
+        loginAttempts: loginAttempts + 1,
       });
     }
   }
@@ -114,7 +117,9 @@ class Login extends React.Component {
             <p className={s.lead}>Log in to your account</p>
           </Fade>
           <ErrorList issues={issues} />
-          <Shake when={!!issues}>
+          <Shake
+            spy={this.state.loginAttempts + this.props.serverLoginAttempts}
+          >
             <div>
               <div className={s.formGroup}>
                 <label className={s.label} htmlFor="email">
@@ -168,7 +173,8 @@ class Login extends React.Component {
 export class ErrorList extends React.Component {
   render() {
     const { issues } = this.props;
-    if (!issues || issues.length === 0) return null;
+    if (!issues || issues.length === 0)
+      return <Fade top collapse spy={JSON.stringify(issues)} />;
 
     var messages = [];
     if (issues.email) {
@@ -210,8 +216,9 @@ export class ErrorList extends React.Component {
         );
       });
     }
+    console.log(JSON.stringify(issues));
     return (
-      <Fade top collapse>
+      <Fade top collapse spy={JSON.stringify(issues)}>
         <div>{messages}</div>
       </Fade>
     );
@@ -221,6 +228,7 @@ export class ErrorList extends React.Component {
 const mapState = state => ({
   loading: state.userState.isLoadingLogin,
   error: state.userState.loginError,
+  serverLoginAttempts: state.userState.serverLoginAttempts,
 });
 
 const mapDispatch = {
