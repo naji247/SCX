@@ -6,6 +6,7 @@ const initialState = {
   isLoadingLogin: false,
   loginError: null,
   serverLoginAttempts: 0,
+  serverSignupAttempts: 0,
 
   isLoadingSignup: false,
   signupError: null,
@@ -44,16 +45,21 @@ export default function userState(state = initialState, action) {
         ...state,
         isLoadingSignup: true,
         token: null,
-        signupError: null,
       };
     case constants.SIGNUP_DONE:
-      return { ...state, token: action.payload.token, isLoadingSignup: false };
+      return {
+        ...state,
+        token: action.payload.token,
+        isLoadingSignup: false,
+        signupError: null,
+      };
     case constants.SIGNUP_ERROR:
       return {
         ...state,
         token: null,
         isLoadingSignup: false,
         signupError: action.payload,
+        serverSignupAttempts: state.serverSignupAttempts + 1,
       };
 
     case constants.LOGOUT:

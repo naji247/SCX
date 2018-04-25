@@ -216,7 +216,6 @@ export class ErrorList extends React.Component {
         );
       });
     }
-    console.log(JSON.stringify(issues));
     return (
       <Fade top collapse spy={JSON.stringify(issues)}>
         <div>{messages}</div>
