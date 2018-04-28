@@ -13,7 +13,6 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Login.css';
 import { connect } from 'react-redux';
 import { login, logout } from '../../actions/authActions';
-import Signup from './Signup';
 import validate from 'validate.js';
 import history from '../../history';
 import { BeatLoader } from 'react-spinners';
