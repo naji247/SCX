@@ -12,9 +12,44 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './TransactionHistory.css';
 import Link from '../Link';
+import transactionState from '../../reducers/transactions';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import { getTransactionsForUser } from '../../actions/transactionActions';
+import AuthRequiringComponent, {
+  authRequiringState,
+} from '../AuthRequiringComponent/AuthRequiringComponent';
+import history from '../../history';
 
-class TransactionHistory extends React.Component {
+class TransactionHistory extends AuthRequiringComponent {
+  componentDidMount() {
+    const { getTransactionsForUser, userToken } = this.props;
+    if (!this.props.isAuthenticated && !this.props.isHydrating) {
+      history.push('/login');
+    } else if (userToken) {
+      getTransactionsForUser(userToken);
+    }
+  }
+
+  componentDidUpdate() {
+    const {
+      getTransactionsForUser,
+      userToken,
+      isLoading,
+      transactions,
+    } = this.props;
+    if (!this.props.isAuthenticated && !this.props.isHydrating) {
+      history.push('/login');
+    } else if (userToken && !isLoading && !transactions) {
+      getTransactionsForUser(userToken);
+    }
+  }
+
   render() {
+    const { transactions } = this.props;
+    const transactionRows = _.map(transactions, transaction => {
+      return TransactionRow({ transaction });
+    });
     return (
       <div className={s.container}>
         <h1 className={s.tableTitle}> Your Transaction History</h1>
@@ -26,38 +61,7 @@ class TransactionHistory extends React.Component {
               <th>Recipient</th>
               <th>Amount</th>
             </tr>
-            <tr className={s.transactionRow}>
-              <td className={s.transactionElem}>3/16/2018</td>
-              <td className={s.transactionElem}>Flights to Vienna</td>
-              <td className={s.transactionElem}>Naseem</td>
-              <td className={s.transactionElem}>
-                <font color="#61a414">+$100.11</font>
-              </td>
-            </tr>
-            <tr className={s.transactionRow}>
-              <td className={s.transactionElem}>3/14/2018</td>
-              <td className={s.transactionElem}>Pi day pies</td>
-              <td className={s.transactionElem}>Darren</td>
-              <td className={s.transactionElem}>
-                <font color="#d0011b">-$90.00</font>
-              </td>
-            </tr>
-            <tr className={s.transactionRow}>
-              <td className={s.transactionElem}>2/4/2018</td>
-              <td className={s.transactionElem}>Dinner and Drinks</td>
-              <td className={s.transactionElem}>Joel</td>
-              <td className={s.transactionElem}>
-                <font color="#d0011b">-$32.21</font>
-              </td>
-            </tr>
-            <tr className={s.transactionRow}>
-              <td className={s.transactionElem}>1/28/2018</td>
-              <td className={s.transactionElem}>Uber to airport</td>
-              <td className={s.transactionElem}>Naseem</td>
-              <td className={s.transactionElem}>
-                <font color="#61a414">+$20.68</font>
-              </td>
-            </tr>
+            <tbody>{transactionRows}</tbody>
           </table>
         </div>
       </div>
@@ -65,4 +69,31 @@ class TransactionHistory extends React.Component {
   }
 }
 
-export default withStyles(s)(TransactionHistory);
+const TransactionRow = ({ transaction }) => {
+  return (
+    <tr className={s.transactionRow}>
+      <td className={s.transactionElem}>{transaction.date}</td>
+      <td className={s.transactionElem}>{transaction.memo}</td>
+      <td className={s.transactionElem}>{transaction.recipient}</td>
+      <td className={s.transactionElem}>
+        <font color="#61a414">{transaction.amount}</font>
+      </td>
+    </tr>
+  );
+};
+
+const mapState = state => {
+  return {
+    ...authRequiringState(state),
+    userToken: state.userState.token,
+    ...state.transactionState,
+  };
+};
+
+const mapDispatch = {
+  getTransactionsForUser,
+};
+
+export default connect(mapState, mapDispatch)(
+  withStyles(s)(TransactionHistory),
+);
