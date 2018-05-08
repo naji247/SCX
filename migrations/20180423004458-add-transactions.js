@@ -19,6 +19,9 @@ module.exports = {
       memo: {
         type: Sequelize.TEXT(),
       },
+      amount: {
+        type: Sequelize.FLOAT(),
+      },
       in_system: {
         type: Sequelize.BOOLEAN(),
         allowNull: false,
