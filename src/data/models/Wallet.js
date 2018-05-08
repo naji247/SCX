@@ -29,17 +29,17 @@ const Wallet = Model.define('wallet', {
   },
 
   address: {
-    type: DataType.STRING(255),
+    type: DataType.TEXT,
     allowNull: false,
   },
 
   private_key: {
-    type: DataType.STRING(255),
+    type: DataType.TEXT,
     allowNull: false,
   },
 
   public_key: {
-    type: DataType.STRING(255),
+    type: DataType.TEXT,
     allowNull: false,
   },
 

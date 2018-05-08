@@ -3,6 +3,7 @@ import passport from '../passport';
 import bip39 from 'bip39';
 import walletjs from 'ethereumjs-wallet/hdkey';
 import Wallet from '../data/models/Wallet';
+import * as kmsUtil from '../kmsUtils';
 
 export const createWalletForUser = (req, res) => {
   passport.authenticate('jwt', { session: false })(req, res, function() {
@@ -26,20 +27,31 @@ export const createWalletForUser = (req, res) => {
     const hdWallet = walletjs.fromMasterSeed(walletSeed);
     const normalWallet = hdWallet.getWallet();
 
-    const publicKey = normalWallet.getPublicKeyString();
-    const privateKey = normalWallet.getPrivateKeyString();
-    const walletAddress = normalWallet.getAddressString();
+    const unencryptedPublicKey = normalWallet.getPublicKey();
+    const unencryptedPrivateKey = normalWallet.getPrivateKey();
+    const unencryptedWalletAddress = normalWallet.getAddress();
 
-    // TODO: Implement KMS here
-
-    Wallet.create({
-      user_id: userId,
-      public_key: publicKey,
-      private_key: privateKey,
-      address: walletAddress,
-    })
-      .then(wallet => {
-        res.send({ address: walletAddress });
+    Promise.all([
+      kmsUtil.encrypt(unencryptedPublicKey),
+      kmsUtil.encrypt(unencryptedPrivateKey),
+      kmsUtil.encrypt(unencryptedWalletAddress),
+    ])
+      .then(
+        encryptedResults =>
+          Wallet.create({
+            user_id: userId,
+            public_key: encryptedResults[0].toString('hex'),
+            private_key: encryptedResults[1].toString('hex'),
+            address: encryptedResults[2].toString('hex'),
+          }),
+        error => {
+          res.status(500).send({
+            message: 'Failed to encrypt wallet, so we did not make one!',
+          });
+        },
+      )
+      .then(writtenWallet => {
+        res.send({ address: unencryptedWalletAddress.toString('hex') });
       })
       .catch(err => {
         res
