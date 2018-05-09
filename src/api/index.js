@@ -23,3 +23,4 @@ api.route('/crons/pricehistory/stop').get(cronApi.stopPriceHistoryCron);
 api.route('/users/:user_id/transactions').get(usersApi.getAllTransactions);
 api.route('/users/:user_id').get(usersApi.getUserInfo);
 api.route('/users/:user_id/wallets').post(usersApi.createWalletForUser);
+// api.route('/testEncrypt').post(usersApi.testEncryption);

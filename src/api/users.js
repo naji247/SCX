@@ -4,6 +4,34 @@ import bip39 from 'bip39';
 import walletjs from 'ethereumjs-wallet/hdkey';
 import Wallet from '../data/models/Wallet';
 import * as kmsUtil from '../kmsUtils';
+import crypto from 'crypto-js';
+
+export const testEncryption = (req, res) => {
+  // var input = new Buffer(
+  //   'AQICAHg3YEjnrKff+p2Fo0uTMcnmcnl64X/XKSRTEqGag6xmUAEfoAvDk0uFbrJ2J/rrnhBkAAAAujCBtwYJKoZIhvcNAQcGoIGpMIGmAgEAMIGgBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDB98DZACm7xYA3k78QIBEIBzfsVO/t++p4+j225E0pYVpjvguCodPDiVllcgBqbTKxQDQDQzw73QPvbSQjMNTLQhp0Pog3JF3yfzNglEYfcFU2Vw+sCevW/ppS1E+D+SJYOIGOJ6API054T7TcqkYXG+rBpfdXzCGH8WbRfwfuTJM54Wqg==',
+  //   'base64',
+  // );
+  // kmsUtil
+  //   .decrypt(input)
+  //   .then(address => {
+  //     res.send(address);
+  //   })
+  //   .catch(error => {
+  //     res.send(error);
+  //   });
+  // kmsUtil
+  //   .encrypt(input)
+  //   .then(encryptedBuffer => {
+  //     return encryptedBuffer;
+  //   })
+  //   .then(encryptedBuffer => {
+  //     return kmsUtil.decrypt(encryptedBuffer);
+  //   })
+  //   .then(message => {
+  //     res.send(message);
+  //   })
+  //   .catch(err => res.send(err));
+};
 
 export const createWalletForUser = (req, res) => {
   passport.authenticate('jwt', { session: false })(req, res, function() {
@@ -32,17 +60,18 @@ export const createWalletForUser = (req, res) => {
     const unencryptedWalletAddress = normalWallet.getAddress();
 
     Promise.all([
-      kmsUtil.encrypt(unencryptedPublicKey),
-      kmsUtil.encrypt(unencryptedPrivateKey),
-      kmsUtil.encrypt(unencryptedWalletAddress),
+      kmsUtil.encrypt(unencryptedPublicKey.toString('hex')),
+      kmsUtil.encrypt(unencryptedPrivateKey.toString('hex')),
+      kmsUtil.encrypt(unencryptedWalletAddress.toString('hex')),
     ])
       .then(
         encryptedResults =>
+          // In order to decrypt, use new Buffer(encryptedString, 'base64')
           Wallet.create({
             user_id: userId,
-            public_key: encryptedResults[0].toString('hex'),
-            private_key: encryptedResults[1].toString('hex'),
-            address: encryptedResults[2].toString('hex'),
+            public_key: encryptedResults[0].toString('base64'),
+            private_key: encryptedResults[1].toString('base64'),
+            address: encryptedResults[2].toString('base64'),
           }),
         error => {
           res.status(500).send({
