@@ -49,7 +49,7 @@ const authenticate = (req, res, err, user, info) => {
   });
 };
 
-auth.post('/signup', function(req, res, next) {
+auth.post('/signup', async function(req, res, next) {
   const {
     firstName,
     lastName,
@@ -76,9 +76,9 @@ auth.post('/signup', function(req, res, next) {
     errorMessage.push('Missing password.');
   }
 
-  if (!phoneNumber) {
-    errorMessage.push('Missing phone number.');
-  }
+  // if (!phoneNumber) {
+  //   errorMessage.push('Missing phone number.');
+  // }
 
   if (errorMessage.length > 0) {
     return res.status(400).json({
@@ -86,81 +86,66 @@ auth.post('/signup', function(req, res, next) {
     });
   }
 
-  var user;
-  bcrypt
-    .hash(password, 10)
-    .then(password => {
-      user = User.build({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        password: password,
-        phone_number: phoneNumber,
-        created_at: moment(),
-        updated_at: moment()
-      });
-
-      return user.save();
-    })
-    .then(newUser => {
-      try {
-        const userId = newUser.userId;
-        const walletSeed = bip39.generateMnemonic();
-        const hdWallet = walletjs.fromMasterSeed(walletSeed);
-        const normalWallet = hdWallet.getWallet();
-
-        const unencryptedPublicKey = normalWallet.getPublicKey();
-        console.log(unencryptedPublicKey);
-        const unencryptedPrivateKey = normalWallet.getPrivateKey();
-        const unencryptedWalletAddress = normalWallet.getAddress();
-      } catch (error) {
-        return newUser.destroy({ force: true }).then(() => {
-          throw new Error(
-            'Failed to sign up user because wallet creation failed.'
-          );
-        });
-      }
-
-      console.log('2nd: ');
-      return Promise.all([
-        kmsUtil.encrypt(unencryptedPublicKey.toString('hex')),
-        kmsUtil.encrypt(unencryptedPrivateKey.toString('hex')),
-        kmsUtil.encrypt(unencryptedWalletAddress.toString('hex'))
-      ])
-        .then(encryptedResults =>
-          // In order to decrypt, use new Buffer(encryptedString, 'base64')
-          Wallet.create({
-            user_id: userId,
-            public_key: encryptedResults[0].toString('base64'),
-            private_key: encryptedResults[1].toString('base64'),
-            address: encryptedResults[2].toString('base64')
-          }).then(wallet => newUser)
-        )
-        .catch(err =>
-          newUser.destroy({ force: true }).then(() => {
-            throw new Error(
-              'Failed to sign up user because wallet creation failed.'
-            );
-          })
-        );
-    })
-    .then(newUser => {
-      return authenticate(req, res, null, newUser, null);
-    })
-    .catch(err => {
-      if (
-        err.original &&
-        err.original.code == 23505 &&
-        err.original.constraint === 'User_email_key'
-      ) {
-        return res.status(409).send({
-          message: `User with the email ${user.email} already exists.`
-        });
-      }
-      return res.status(500).send({
-        message: err.message
-      });
+  try {
+    let hashedPassword = await bcrypt.hash(password, 10);
+    let user = User.build({
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      password: hashedPassword,
+      phone_number: phoneNumber,
+      created_at: moment(),
+      updated_at: moment()
     });
+
+    const newUser = await user.save();
+
+    try {
+      const userId = newUser.id;
+      const walletSeed = bip39.generateMnemonic();
+      const hdWallet = walletjs.fromMasterSeed(walletSeed);
+      const normalWallet = hdWallet.getWallet();
+
+      const unencryptedPublicKey = normalWallet.getPublicKey();
+      const unencryptedPrivateKey = normalWallet.getPrivateKey();
+      const unencryptedWalletAddress = normalWallet.getAddress();
+
+      const kmsEncryptedPublicKey = await kmsUtil.encrypt(
+        unencryptedPublicKey.toString('hex')
+      );
+      const kmsEncryptedPrivateKey = await kmsUtil.encrypt(
+        unencryptedPrivateKey.toString('hex')
+      );
+      const kmsEncryptedWalletAddress = await kmsUtil.encrypt(
+        unencryptedWalletAddress.toString('hex')
+      );
+
+      const writtenWallet = await Wallet.create({
+        user_id: userId,
+        public_key: kmsEncryptedPublicKey.toString('base64'),
+        private_key: kmsEncryptedPrivateKey.toString('base64'),
+        address: kmsEncryptedWalletAddress.toString('base64')
+      });
+    } catch (walletError) {
+      await newUser.destroy({ force: true });
+      throw new Error('Failed to create user. (Error code 142388)');
+    }
+
+    await authenticate(req, res, null, newUser, null);
+  } catch (err) {
+    if (
+      err.original &&
+      err.original.code == 23505 &&
+      err.original.constraint === 'User_email_key'
+    ) {
+      return res.status(409).send({
+        message: `User with the email ${email} already exists.`
+      });
+    }
+    return res.status(500).send({
+      message: err.message
+    });
+  }
 });
 
 auth.post('/login', function(req, res, next) {
